@@ -29,14 +29,14 @@ public class CauldronActionBottle implements ICauldronAction{
                         player.incrementStat(Stats.USE_CAULDRON);
                         player.setStackInHand(hand, glassBottle);
                         if (player instanceof ServerPlayerEntity) {
-                            ((ServerPlayerEntity)player).openContainer(player.playerContainer);
+                            ((ServerPlayerEntity)player).openHandledScreen(player.playerScreenHandler);
                         }
                     }
                     world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     entity.fluid = Fluids.WATER;
                     entity.insertBottle();
                 }
-                return ActionResult.SUCCESS;
+                return ActionResult.method_29236(world.isClient);
             }
         }
         else if(itemStack.getItem() == Items.GLASS_BOTTLE){
@@ -51,13 +51,13 @@ public class CauldronActionBottle implements ICauldronAction{
                         } else if (!player.inventory.insertStack(waterBottleItem)) {
                             player.dropItem(waterBottleItem, false);
                         } else if (player instanceof ServerPlayerEntity) {
-                            ((ServerPlayerEntity)player).openContainer(player.playerContainer);
+                            ((ServerPlayerEntity)player).openHandledScreen(player.playerScreenHandler);
                         }
                     }
                     world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     entity.takeBottle();
                 }
-                return ActionResult.SUCCESS;
+                return ActionResult.method_29236(world.isClient);
             }
         }
         return ActionResult.PASS;

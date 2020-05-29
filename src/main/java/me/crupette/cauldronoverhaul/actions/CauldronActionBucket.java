@@ -29,7 +29,7 @@ public class CauldronActionBucket implements ICauldronAction{
 
             Fluid fluid = Fluids.EMPTY;
             for(Fluid checkFluid : Registry.FLUID.stream().collect(Collectors.toSet())){
-                if(checkFluid.getBucketItem() == bucket){
+                if(checkFluid.isStill(checkFluid.getDefaultState()) && checkFluid.getBucketItem() == bucket){
                     fluid = checkFluid;
                     break;
                 }
@@ -51,8 +51,8 @@ public class CauldronActionBucket implements ICauldronAction{
                     entity.setLevel(0);
                     entity.markDirty();
                     world.playSound((PlayerEntity)null, pos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                    return ActionResult.SUCCESS;
                 }
+                return ActionResult.method_29236(world.isClient);
             }else if(entity.level < 1000 && (entity.fluid == Fluids.EMPTY || fluid == entity.fluid) && !world.isClient){
 
                 if(!player.abilities.creativeMode) {
@@ -64,7 +64,7 @@ public class CauldronActionBucket implements ICauldronAction{
                 entity.markDirty();
                 world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
             }
-            return ActionResult.SUCCESS;
+            return ActionResult.method_29236(world.isClient);
         }
         return ActionResult.PASS;
     }

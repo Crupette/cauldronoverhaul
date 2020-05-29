@@ -46,7 +46,7 @@ public class CauldronActionClean implements ICauldronAction{
                 }else if(!player.inventory.insertStack(bannerCopy)){
                     player.dropItem(bannerCopy, false);
                 }else if(player instanceof ServerPlayerEntity){
-                    ((ServerPlayerEntity)player).openContainer(player.playerContainer);
+                    ((ServerPlayerEntity)player).openHandledScreen(player.playerScreenHandler);
                 }
             }
             world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
