@@ -12,7 +12,7 @@
     "sources": "https://github.com/Crupette/cauldronoverhaul"
   },
   "license": "MIT",
-  "icon": "assets/cauldroncontainer/icon.png",
+  "icon": "assets/cauldronoverhaul/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
