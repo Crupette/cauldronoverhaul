@@ -13,7 +13,11 @@ import net.minecraft.stat.Stats;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+
+import java.util.stream.Collectors;
+
 
 public class CauldronActionBucket implements ICauldronAction{
 
@@ -22,20 +26,24 @@ public class CauldronActionBucket implements ICauldronAction{
         ItemStack itemStack = player.getStackInHand(hand);
         if(itemStack.getItem() instanceof BucketItem){
             BucketItem bucket = (BucketItem) itemStack.getItem();
-            //TODO: Get (or make) a fluid API that registers buckets of fluids with public fluid fields (god damn it Mojang)
+
             Fluid fluid = Fluids.EMPTY;
-            if(bucket == Items.WATER_BUCKET) fluid = Fluids.WATER;
-            if(bucket == Items.LAVA_BUCKET) fluid = Fluids.LAVA;
+            for(Fluid checkFluid : Registry.FLUID.stream().collect(Collectors.toSet())){
+                if(checkFluid.getBucketItem() == bucket){
+                    fluid = checkFluid;
+                    break;
+                }
+            }
 
             if(bucket == Items.BUCKET){
                 if(entity.level == 1000 && !world.isClient){
                     if(!player.abilities.creativeMode){
                         itemStack.decrement(1);
+                        ItemStack fluidBucket = new ItemStack(entity.fluid.getBucketItem());
                         if(itemStack.isEmpty()){
-                            //HMMMMMMMMMM
-                            player.setStackInHand(hand, new ItemStack(entity.fluid.getBucketItem()));
-                        }else if(!player.inventory.insertStack(new ItemStack(entity.fluid.getBucketItem()))){
-                            player.dropItem(new ItemStack(entity.fluid.getBucketItem()), false);
+                            player.setStackInHand(hand, fluidBucket);
+                        }else if(!player.inventory.insertStack(fluidBucket)){
+                            player.dropItem(fluidBucket, false);
                         }
                     }
                     player.incrementStat(Stats.USE_CAULDRON);
