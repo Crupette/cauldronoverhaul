@@ -29,7 +29,7 @@ public class CauldronActionBucket implements ICauldronAction{
 
             Fluid fluid = Fluids.EMPTY;
             for(Fluid checkFluid : Registry.FLUID.stream().collect(Collectors.toSet())){
-                if(checkFluid.getBucketItem() == bucket){
+                if(checkFluid.isStill(checkFluid.getDefaultState()) && checkFluid.getBucketItem() == bucket){
                     fluid = checkFluid;
                     break;
                 }
