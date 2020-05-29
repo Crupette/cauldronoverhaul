@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "me.crupette.cauldronoverhaul.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "CauldronBlockMixin"
+  ],
+  "client": [],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "cauldronoverhaul",
+  "version": "${version}",
+  "name": "Cauldron Overhaul",
+  "description": "Allows cauldrons to act as a 1 bucket container for any fluid. May break other mod's cauldron interactions",
+  "authors": [
+    "Crupette"
+  ],
+  "contributors": [],
+  "contact": {
+    "sources": "https://github.com/Crupette/cauldronoverhaul"
+  },
+  "license": "MIT",
+  "icon": "assets/cauldroncontainer/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "me.crupette.cauldronoverhaul.CauldronOverhaul"
+    ],
+    "client": [
+      "me.crupette.cauldronoverhaul.CauldronOverhaulClient"
+    ],
+    "server": []
+  },
+  "mixins": [
+    "cauldronoverhaul.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.4.0",
+    "fabric": "*"
+  }
+}
