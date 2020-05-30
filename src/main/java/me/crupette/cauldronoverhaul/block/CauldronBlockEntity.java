@@ -58,13 +58,11 @@ public class CauldronBlockEntity extends BlockEntity implements BlockEntityClien
                               PlayerEntity player, Hand hand, BlockHitResult hit, ItemStack itemStack){
         for(ICauldronAction action : CauldronActions.getCauldronActions()){
             ActionResult result = action.onUse(this, world, pos, player, hand);
-            System.out.println("Got " + result.toString());
             if(!result.equals(ActionResult.PASS)) {
                 if(!world.isClient) this.sync();
                 return result;
             }
         }
-        System.out.println("Returning " + ActionResult.PASS.toString());
         return ActionResult.PASS;
     }
 
