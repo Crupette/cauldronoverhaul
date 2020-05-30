@@ -43,7 +43,7 @@ public class CauldronBER extends BlockEntityRenderer<CauldronBlockEntity> {
 
         Sprite fluidSprite = fluidHandler.getFluidSprites(null, null, fluid.getDefaultState())[0];
 
-        VertexConsumer consumer = vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(new Identifier(fluidId.getNamespace(), "textures/" + fluidSprite.getId().getPath() + ".png")));
+        VertexConsumer consumer = vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(new Identifier(fluidSprite.getId().getNamespace(), "textures/" + fluidSprite.getId().getPath() + ".png")));
         MatrixStack.Entry matrixEntry = matrices.peek();
         Matrix4f model = matrixEntry.getModel();
         Matrix3f normal = matrixEntry.getNormal();
