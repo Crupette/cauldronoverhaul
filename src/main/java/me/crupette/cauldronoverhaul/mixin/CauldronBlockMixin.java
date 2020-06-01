@@ -1,6 +1,7 @@
 package me.crupette.cauldronoverhaul.mixin;
 
 import me.crupette.cauldronoverhaul.block.CauldronBlockEntity;
+import me.crupette.cauldronoverhaul.util.CauldronBlockTransformer;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
@@ -55,6 +56,7 @@ public abstract class CauldronBlockMixin extends Block implements BlockEntityPro
             return;
         float fluidHeight = pos.getY() + (0.25f) + ((0.7f) * (blockEntity.level / 1000.f));
         if (!world.isClient && entity.getY() <= (double)fluidHeight) {
+            if(CauldronBlockTransformer.onEntityCollision(state, world, pos, entity, blockEntity)) return;
             blockEntity.fluid.getDefaultState().getBlockState().onEntityCollision(world, pos, entity);
             if(blockEntity.fluid == Fluids.WATER && entity.isOnFire()){
                 entity.extinguish();
