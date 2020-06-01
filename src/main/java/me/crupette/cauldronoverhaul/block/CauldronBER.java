@@ -34,7 +34,7 @@ public class CauldronBER extends BlockEntityRenderer<CauldronBlockEntity> {
         FluidRenderHandler fluidHandler = FluidRenderHandlerRegistry.INSTANCE.get(fluid);
         BlockState fluidBlock = fluid.getDefaultState().getBlockState();
         int fluidColor = fluidHandler.getFluidColor(null, null, fluid.getDefaultState());
-        int fluidR = (fluidColor >> 18) & 0xFF;
+        int fluidR = (fluidColor >> 16) & 0xFF;
         int fluidG = (fluidColor >> 8) & 0xFF;
         int fluidB = (fluidColor >> 0) & 0xFF;
 

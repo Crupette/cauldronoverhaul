@@ -1,6 +1,7 @@
 package me.crupette.cauldronoverhaul.actions;
 
 import me.crupette.cauldronoverhaul.block.CauldronBlockEntity;
+import me.crupette.cauldronoverhaul.util.BucketActionTransformer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
@@ -34,12 +35,14 @@ public class CauldronActionBucket implements ICauldronAction{
                     break;
                 }
             }
+            fluid = BucketActionTransformer.onBucketEmpty(itemStack, fluid);
 
             if(bucket == Items.BUCKET){
                 if(entity.level == 1000 && !world.isClient){
                     if(!player.abilities.creativeMode){
                         itemStack.decrement(1);
                         ItemStack fluidBucket = new ItemStack(entity.fluid.getBucketItem());
+                        fluidBucket = BucketActionTransformer.onBucketFill(fluidBucket, entity.fluid);
                         if(itemStack.isEmpty()){
                             player.setStackInHand(hand, fluidBucket);
                         }else if(!player.inventory.insertStack(fluidBucket)){

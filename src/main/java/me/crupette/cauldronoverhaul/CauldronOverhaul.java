@@ -5,8 +5,10 @@ import me.crupette.cauldronoverhaul.actions.CauldronActionBucket;
 import me.crupette.cauldronoverhaul.actions.CauldronActionClean;
 import me.crupette.cauldronoverhaul.actions.CauldronActions;
 import me.crupette.cauldronoverhaul.block.CauldronBlockEntity;
+import me.crupette.cauldronoverhaul.fluidpotions.FluidPotionsModIntegration;
 import net.fabricmc.api.ModInitializer;
 
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.Identifier;
@@ -32,6 +34,10 @@ public class CauldronOverhaul implements ModInitializer {
         CauldronActions.addAction(new CauldronActionBucket());
         CauldronActions.addAction(new CauldronActionBottle());
         CauldronActions.addAction(new CauldronActionClean());
+
+        if(FabricLoader.getInstance().isModLoaded("fluidpotions")){
+            new FluidPotionsModIntegration().init();
+        }
     }
 
     public static void log(Level level, String message){
