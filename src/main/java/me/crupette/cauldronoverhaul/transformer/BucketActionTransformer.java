@@ -1,4 +1,4 @@
-package me.crupette.cauldronoverhaul.util;
+package me.crupette.cauldronoverhaul.transformer;
 
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;

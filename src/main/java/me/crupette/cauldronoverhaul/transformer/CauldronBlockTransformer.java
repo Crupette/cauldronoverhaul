@@ -1,4 +1,4 @@
-package me.crupette.cauldronoverhaul.util;
+package me.crupette.cauldronoverhaul.transformer;
 
 import me.crupette.cauldronoverhaul.block.CauldronBlockEntity;
 import net.minecraft.block.BlockState;

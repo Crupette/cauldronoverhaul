@@ -3,12 +3,14 @@ package me.crupette.cauldronoverhaul.block;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.Matrix3f;
 import net.minecraft.client.util.math.Matrix4f;
@@ -16,6 +18,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.registry.Registry;
 
 public class CauldronBER extends BlockEntityRenderer<CauldronBlockEntity> {
@@ -28,12 +31,22 @@ public class CauldronBER extends BlockEntityRenderer<CauldronBlockEntity> {
         if(blockEntity.fluid == Fluids.EMPTY) return;
         matrices.push();
 
+        float itemScale = (float)blockEntity.brewTimeLeft / 200.f;
+
+        matrices.translate(0.5, 0.8, 0.5);
+        matrices.scale(itemScale, itemScale, itemScale);
+        MinecraftClient.getInstance().getItemRenderer().renderItem(blockEntity.ingredient, ModelTransformation.Mode.GROUND, light, overlay, matrices, vertexConsumers);
+
+        matrices.pop();
+        matrices.push();
+
         Fluid fluid = blockEntity.fluid;
         Identifier fluidId = Registry.FLUID.getId(fluid);
 
         FluidRenderHandler fluidHandler = FluidRenderHandlerRegistry.INSTANCE.get(fluid);
         BlockState fluidBlock = fluid.getDefaultState().getBlockState();
         int fluidColor = fluidHandler.getFluidColor(null, null, fluid.getDefaultState());
+
         int fluidR = (fluidColor >> 16) & 0xFF;
         int fluidG = (fluidColor >> 8) & 0xFF;
         int fluidB = (fluidColor >> 0) & 0xFF;
@@ -52,7 +65,6 @@ public class CauldronBER extends BlockEntityRenderer<CauldronBlockEntity> {
         consumer.vertex(model,1, height, 0).color(fluidR, fluidG, fluidB, 255).texture(1, 0).overlay(OverlayTexture.DEFAULT_UV).light(fluidLight).normal(normal, 0, 1, 0).next();
         consumer.vertex(model,1, height, 1).color(fluidR, fluidG, fluidB, 255).texture(1.F, 1.F / fluidSprite.getHeight()).overlay(OverlayTexture.DEFAULT_UV).light(fluidLight).normal(normal, 0, 1, 0).next();
         consumer.vertex(model,0, height, 1).color(fluidR, fluidG, fluidB, 255).texture(0.F, 1.F / fluidSprite.getHeight()).overlay(OverlayTexture.DEFAULT_UV).light(fluidLight).normal(normal, 0, 1, 0).next();
-
 
         matrices.pop();
     }
