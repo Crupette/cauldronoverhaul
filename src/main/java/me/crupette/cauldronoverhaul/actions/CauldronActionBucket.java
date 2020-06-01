@@ -54,7 +54,7 @@ public class CauldronActionBucket implements ICauldronAction{
                         entity.fluid = Fluids.EMPTY;
                         entity.setLevel(0);
                         entity.markDirty();
-                        world.playSound((PlayerEntity) null, pos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                        world.playSound(null, pos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     }
                     return ActionResult.method_29236(world.isClient);
                 }

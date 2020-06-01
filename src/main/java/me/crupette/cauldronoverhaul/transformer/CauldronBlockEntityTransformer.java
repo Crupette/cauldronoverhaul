@@ -1,7 +1,6 @@
 package me.crupette.cauldronoverhaul.transformer;
 
 import me.crupette.cauldronoverhaul.block.CauldronBlockEntity;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -9,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CauldronBlockEntityTransformer {
-    private static List<Entry> transformers = new ArrayList<>();
+    private static final List<Entry> transformers = new ArrayList<>();
 
     public static void addTransformer(Entry entry){
         transformers.add(entry);

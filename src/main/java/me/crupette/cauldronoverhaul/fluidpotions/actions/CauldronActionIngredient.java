@@ -2,8 +2,6 @@ package me.crupette.cauldronoverhaul.fluidpotions.actions;
 
 import me.crupette.cauldronoverhaul.actions.ICauldronAction;
 import me.crupette.cauldronoverhaul.block.CauldronBlockEntity;
-import me.crupette.cauldronoverhaul.transformer.BucketActionTransformer;
-import me.crupette.fluidpotions.FluidPotions;
 import me.crupette.fluidpotions.fluid.PotionFluid;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
@@ -15,7 +13,6 @@ import net.minecraft.potion.Potions;
 import net.minecraft.recipe.BrewingRecipeRegistry;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.stat.Stats;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
