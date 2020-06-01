@@ -14,7 +14,6 @@ import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
 import net.minecraft.recipe.BrewingRecipeRegistry;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -62,7 +61,7 @@ public class PotionCauldronBlockEntityTransformer implements CauldronBlockEntity
                     //Brewing is done (timer is stored in ingredient count, hope this doesn't bite me in the ass
                     if(blockEntity.brewTimeLeft <= 0){
                         ItemStack result = BrewingRecipeRegistry.craft(new ItemStack(ingredientItem), baseStack);
-                        blockEntity.fluid = FluidPotions.INSTANCE.getStill(PotionUtil.getPotion(result));
+                        blockEntity.fluid = FluidPotions.getStill(PotionUtil.getPotion(result));
                         blockEntity.ingredient = ItemStack.EMPTY;
                         blockEntity.sync();
                         world.playSound(null, pos, SoundEvents.BLOCK_BREWING_STAND_BREW, SoundCategory.BLOCKS, 1.F, 1.F);

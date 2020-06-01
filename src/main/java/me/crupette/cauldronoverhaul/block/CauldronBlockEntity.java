@@ -21,9 +21,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class CauldronBlockEntity extends BlockEntity implements BlockEntityClientSerializable, Tickable {
     public Fluid fluid;
     public int level;

@@ -18,7 +18,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.registry.Registry;
 
 public class CauldronBER extends BlockEntityRenderer<CauldronBlockEntity> {

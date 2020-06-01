@@ -2,15 +2,9 @@ package me.crupette.cauldronoverhaul.fluidpotions.actions;
 
 import me.crupette.cauldronoverhaul.actions.ICauldronAction;
 import me.crupette.cauldronoverhaul.block.CauldronBlockEntity;
-import me.crupette.cauldronoverhaul.transformer.BucketActionTransformer;
-import me.crupette.cauldronoverhaul.transformer.CauldronBlockTransformer;
 import me.crupette.fluidpotions.FluidPotions;
 import me.crupette.fluidpotions.fluid.PotionFluid;
 import me.crupette.fluidpotions.item.PotionBucketItem;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
@@ -33,7 +27,7 @@ public class CauldronActionPotion implements ICauldronAction {
     public ActionResult onUse(CauldronBlockEntity entity, World world, BlockPos pos, PlayerEntity player, Hand hand) {
         ItemStack heldItem = player.getStackInHand(hand);
         if (heldItem.getItem() instanceof PotionBucketItem) {
-            Fluid fluid = FluidPotions.INSTANCE.getStill(PotionUtil.getPotion(heldItem));
+            Fluid fluid = FluidPotions.getStill(PotionUtil.getPotion(heldItem));
             if (entity.level < 1000 && (entity.fluid == Fluids.EMPTY || fluid == entity.fluid) && !world.isClient) {
 
                 if (!player.abilities.creativeMode) {
@@ -48,7 +42,7 @@ public class CauldronActionPotion implements ICauldronAction {
             return ActionResult.SUCCESS;
         } else if (heldItem.getItem() instanceof PotionItem) {
             Potion potion = PotionUtil.getPotion(heldItem);
-            PotionFluid fluid = FluidPotions.INSTANCE.getStill(potion);
+            PotionFluid fluid = FluidPotions.getStill(potion);
             if (entity.internal_bottleCount < 3 && (entity.fluid == Fluids.EMPTY || fluid == entity.fluid) && !world.isClient) {
                 if (!player.abilities.creativeMode) {
                     ItemStack glassBottle = new ItemStack(Items.GLASS_BOTTLE);

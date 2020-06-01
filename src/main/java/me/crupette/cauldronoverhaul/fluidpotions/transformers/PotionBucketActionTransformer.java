@@ -1,6 +1,5 @@
 package me.crupette.cauldronoverhaul.fluidpotions.transformers;
 
-import me.crupette.cauldronoverhaul.fluidpotions.actions.CauldronActionPotion;
 import me.crupette.cauldronoverhaul.transformer.BucketActionTransformer;
 import me.crupette.fluidpotions.fluid.PotionFluid;
 import net.minecraft.fluid.Fluid;
@@ -11,7 +10,7 @@ public class PotionBucketActionTransformer implements BucketActionTransformer.En
 
     public ItemStack onBucketFill(ItemStack root, Fluid fluid) {
         if(fluid instanceof PotionFluid){
-            root = PotionUtil.setPotion(root, ((PotionFluid)fluid).getPotion());
+            PotionUtil.setPotion(root, ((PotionFluid) fluid).getPotion());
         }
         return root;
     }

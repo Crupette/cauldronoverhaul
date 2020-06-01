@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CauldronActions {
-    private static List<ICauldronAction> cauldronActionList = new ArrayList<ICauldronAction>();
+    private static final List<ICauldronAction> cauldronActionList = new ArrayList<ICauldronAction>();
 
     public static void addAction(ICauldronAction action){
         cauldronActionList.add(action);
