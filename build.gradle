@@ -1,6 +1,8 @@
 plugins {
 	id 'fabric-loom' version '0.2.7-SNAPSHOT'
 	id 'maven-publish'
+	id 'com.matthewprenger.cursegradle' version '1.4.0'
+	id 'com.novoda.build-properties' version '0.4.1'
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -9,6 +11,12 @@ targetCompatibility = JavaVersion.VERSION_1_8
 archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
+
+buildProperties {
+	secrets {
+		using project.file('secret.properties')
+	}
+}
 
 minecraft {
 }
@@ -20,6 +28,12 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+	modCompileOnly 'com.github.Crupette:fluidpotions:v1.0.0-1.15'
+	modRuntime 'com.github.Crupette:fluidpotions:v1.0.0-1.15'
+
+	modRuntime 'io.github.prospector:modmenu:1.10.2+build.35'
+
 }
 
 processResources {
@@ -54,6 +68,40 @@ jar {
 	from "LICENSE"
 }
 
+curseforge {
+	if(project.file('secret.properties').exists()) {
+		apiKey = buildProperties.secrets['curse_api_key'].string
+	}else{
+		apiKey = ''
+	}
+	project {
+		id = '386608'
+		changelog = project.changelog
+		releaseType = 'release'
+		addGameVersion '1.16-Snapshot'
+		addGameVersion 'Java 8'
+		addGameVersion 'Fabric'
+		relations {
+			requiredDependency 'fabric-api'
+		}
+
+		mainArtifact(file("${project.buildDir.absolutePath}/libs/${archivesBaseName}-${project.version}.jar")) {
+			displayName = "v${project.version}-${project.minecraft_version}"
+		}
+		addArtifact(file("${project.buildDir.absolutePath}/libs/${archivesBaseName}-${project.version}-sources.jar")) {
+			displayName = "v${project.version}-${project.minecraft_version} sources"
+		}
+
+		afterEvaluate {
+			uploadTask.dependsOn("remapJar")
+			uploadTask.dependsOn("sourcesJar")
+		}
+	}
+	options {
+		forgeGradleIntegration = false
+	}
+}
+
 // configure the maven publication
 publishing {
 	publications {
@@ -70,10 +118,10 @@ publishing {
 			}
 		}
 	}
+}
 
-	// select the repositories you want to publish to
+allprojects {
 	repositories {
-		// uncomment to publish to the local maven
-		// mavenLocal()
+		maven { url 'https://jitpack.io' }
 	}
 }
