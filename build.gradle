@@ -75,7 +75,7 @@ curseforge {
 		apiKey = ''
 	}
 	project {
-		id = '386947'
+		id = '386608'
 		changelog = project.changelog
 		releaseType = 'release'
 		addGameVersion '1.16-Snapshot'
@@ -99,6 +99,7 @@ curseforge {
 	}
 	options {
 		forgeGradleIntegration = false
+		debug = true
 	}
 }
 
