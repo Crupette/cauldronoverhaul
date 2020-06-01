@@ -40,11 +40,11 @@ public class CauldronBlockEntity extends BlockEntity implements BlockEntityClien
     }
 
     @Override
-    public void fromTag(CompoundTag compoundTag) {
-        super.fromTag(compoundTag);
-        this.level = compoundTag.getInt("level");
+    public void fromTag(BlockState state, CompoundTag tag) {
+        super.fromTag(state, tag);
+        this.level = tag.getInt("level");
         this.internal_bottleCount = this.level / 333;
-        this.fluid = Registry.FLUID.get(new Identifier(compoundTag.getString("fluid")));
+        this.fluid = Registry.FLUID.get(new Identifier(tag.getString("fluid")));
     }
 
     @Override
@@ -56,7 +56,7 @@ public class CauldronBlockEntity extends BlockEntity implements BlockEntityClien
 
     @Override
     public CompoundTag toTag(CompoundTag tag){
-        super.toTag(tag);
+        tag = super.toTag(tag);
         tag.putInt("level", this.level);
         tag.putString("fluid", Registry.FLUID.getId(this.fluid).toString());
         return tag;
@@ -66,7 +66,7 @@ public class CauldronBlockEntity extends BlockEntity implements BlockEntityClien
                               PlayerEntity player, Hand hand, BlockHitResult hit, ItemStack itemStack){
         for(ICauldronAction action : CauldronActions.getCauldronActions()){
             ActionResult result = action.onUse(this, world, pos, player, hand);
-            if(result.equals(ActionResult.SUCCESS)) {
+            if(!result.equals(ActionResult.PASS)) {
                 if(!world.isClient) this.sync();
                 return result;
             }

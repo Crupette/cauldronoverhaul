@@ -29,10 +29,8 @@ dependencies {
 
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
-	modCompileOnly 'com.github.Crupette:fluidpotions:v1.0.0-1.15'
-	modRuntime 'com.github.Crupette:fluidpotions:v1.0.0-1.15'
-
-	modRuntime 'io.github.prospector:modmenu:1.10.2+build.35'
+	modCompileOnly 'com.github.Crupette:fluidpotions:v1.0.0-1.16'
+	modRuntime 'com.github.Crupette:fluidpotions:v1.0.0-1.16'
 
 }
 

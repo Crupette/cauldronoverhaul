@@ -38,36 +38,39 @@ public class CauldronActionBucket implements ICauldronAction{
             fluid = BucketActionTransformer.onBucketEmpty(itemStack, fluid);
 
             if(bucket == Items.BUCKET){
-                if(entity.level == 1000 && !world.isClient){
-                    if(!player.abilities.creativeMode){
-                        itemStack.decrement(1);
-                        ItemStack fluidBucket = new ItemStack(entity.fluid.getBucketItem());
-                        fluidBucket = BucketActionTransformer.onBucketFill(fluidBucket, entity.fluid);
-                        if(itemStack.isEmpty()){
-                            player.setStackInHand(hand, fluidBucket);
-                        }else if(!player.inventory.insertStack(fluidBucket)){
-                            player.dropItem(fluidBucket, false);
+                if(entity.level == 1000){
+                    if(!world.isClient) {
+                        if (!player.abilities.creativeMode) {
+                            itemStack.decrement(1);
+                            ItemStack fluidBucket = new ItemStack(entity.fluid.getBucketItem());
+                            fluidBucket = BucketActionTransformer.onBucketFill(fluidBucket, entity.fluid);
+                            if (itemStack.isEmpty()) {
+                                player.setStackInHand(hand, fluidBucket);
+                            } else if (!player.inventory.insertStack(fluidBucket)) {
+                                player.dropItem(fluidBucket, false);
+                            }
                         }
+                        player.incrementStat(Stats.USE_CAULDRON);
+                        entity.fluid = Fluids.EMPTY;
+                        entity.setLevel(0);
+                        entity.markDirty();
+                        world.playSound((PlayerEntity) null, pos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     }
-                    player.incrementStat(Stats.USE_CAULDRON);
-                    entity.fluid = Fluids.EMPTY;
-                    entity.setLevel(0);
+                    return ActionResult.method_29236(world.isClient);
+                }
+            }else if(entity.level < 1000 && (entity.fluid == Fluids.EMPTY || fluid == entity.fluid)) {
+                if (!world.isClient) {
+                    if (!player.abilities.creativeMode) {
+                        player.setStackInHand(hand, new ItemStack(Items.BUCKET));
+                    }
+                    player.incrementStat(Stats.FILL_CAULDRON);
+                    entity.fluid = fluid;
+                    entity.setLevel(1000);
                     entity.markDirty();
-                    world.playSound((PlayerEntity)null, pos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                    world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 }
                 return ActionResult.method_29236(world.isClient);
-            }else if(entity.level < 1000 && (entity.fluid == Fluids.EMPTY || fluid == entity.fluid) && !world.isClient){
-
-                if(!player.abilities.creativeMode) {
-                    player.setStackInHand(hand, new ItemStack(Items.BUCKET));
-                }
-                player.incrementStat(Stats.FILL_CAULDRON);
-                entity.fluid = fluid;
-                entity.setLevel(1000);
-                entity.markDirty();
-                world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
             }
-            return ActionResult.method_29236(world.isClient);
         }
         return ActionResult.PASS;
     }

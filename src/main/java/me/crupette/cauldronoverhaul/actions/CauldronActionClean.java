@@ -28,8 +28,8 @@ public class CauldronActionClean implements ICauldronAction{
                 entity.takeBottle();
                 player.incrementStat(Stats.CLEAN_ARMOR);
                 world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                return ActionResult.SUCCESS;
             }
+            return ActionResult.method_29236(world.isClient);
         }
         if(itemStack.getItem() instanceof BannerItem){
             if(BannerBlockEntity.getPatternCount(itemStack) > 0 && !world.isClient){
@@ -50,7 +50,7 @@ public class CauldronActionClean implements ICauldronAction{
                 }
             }
             world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
-            return ActionResult.SUCCESS;
+            return ActionResult.method_29236(world.isClient);
         }
 
         if(itemStack.getItem() instanceof BlockItem){
@@ -65,8 +65,8 @@ public class CauldronActionClean implements ICauldronAction{
                 entity.takeBottle();
                 player.incrementStat(Stats.CLEAN_SHULKER_BOX);
                 world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                return ActionResult.SUCCESS;
             }
+            return ActionResult.method_29236(world.isClient);
         }
         return ActionResult.PASS;
     }

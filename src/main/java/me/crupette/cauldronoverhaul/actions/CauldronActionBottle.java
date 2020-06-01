@@ -22,8 +22,8 @@ public class CauldronActionBottle implements ICauldronAction{
     public ActionResult onUse(CauldronBlockEntity entity, World world, BlockPos pos, PlayerEntity player, Hand hand) {
         ItemStack itemStack = player.getStackInHand(hand);
         if (itemStack.getItem() instanceof PotionItem){
-            if(PotionUtil.getPotion(itemStack) == Potions.WATER && (entity.fluid == Fluids.WATER || entity.fluid == Fluids.EMPTY)){
-                if(entity.internal_bottleCount < 3 && !world.isClient){
+            if(PotionUtil.getPotion(itemStack) == Potions.WATER && entity.internal_bottleCount < 3 && (entity.fluid == Fluids.WATER || entity.fluid == Fluids.EMPTY)){
+                if(!world.isClient){
                     if(!player.abilities.creativeMode){
                         ItemStack glassBottle = new ItemStack(Items.GLASS_BOTTLE);
                         player.incrementStat(Stats.USE_CAULDRON);

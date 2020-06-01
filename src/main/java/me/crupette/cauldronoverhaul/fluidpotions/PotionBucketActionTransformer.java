@@ -9,7 +9,7 @@ import net.minecraft.potion.PotionUtil;
 public class PotionBucketActionTransformer implements BucketActionTransformer.Entry {
     public ItemStack onBucketFill(ItemStack root, Fluid fluid) {
         if(fluid instanceof PotionFluid){
-            root = PotionUtil.setPotion(root, ((PotionFluid)fluid).getPotion());
+            root = PotionUtil.setPotion(root, ((PotionFluid) fluid).getPotion());
         }
         return root;
     }

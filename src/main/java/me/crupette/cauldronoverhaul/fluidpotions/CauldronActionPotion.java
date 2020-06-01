@@ -40,41 +40,45 @@ public class CauldronActionPotion implements ICauldronAction {
                 entity.sync();
                 world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
             }
-            return ActionResult.SUCCESS;
+            return ActionResult.method_29236(world.isClient);
         }else if(heldItem.getItem() instanceof PotionItem){
             Potion potion = PotionUtil.getPotion(heldItem);
             PotionFluid fluid = FluidPotions.INSTANCE.getStill(potion);
-            if(entity.internal_bottleCount < 3 && (entity.fluid == Fluids.EMPTY || fluid == entity.fluid) && !world.isClient){
-                if(!player.abilities.creativeMode){
-                    ItemStack glassBottle = new ItemStack(Items.GLASS_BOTTLE);
-                    player.incrementStat(Stats.USE_CAULDRON);
-                    player.setStackInHand(hand, glassBottle);
-                    if (player instanceof ServerPlayerEntity) {
-                        ((ServerPlayerEntity)player).openContainer(player.playerContainer);
+            if(entity.internal_bottleCount < 3 && (entity.fluid == Fluids.EMPTY || fluid == entity.fluid)){
+                if(!world.isClient) {
+                    if (!player.abilities.creativeMode) {
+                        ItemStack glassBottle = new ItemStack(Items.GLASS_BOTTLE);
+                        player.incrementStat(Stats.USE_CAULDRON);
+                        player.setStackInHand(hand, glassBottle);
+                        if (player instanceof ServerPlayerEntity) {
+                            ((ServerPlayerEntity) player).openHandledScreen(player.playerScreenHandler);
+                        }
                     }
+                    world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                    entity.fluid = fluid;
+                    entity.insertBottle();
                 }
-                world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                entity.fluid = fluid;
-                entity.insertBottle();
-                return ActionResult.SUCCESS;
+                return ActionResult.method_29236(world.isClient);
             }
         }else if(heldItem.getItem() == Items.GLASS_BOTTLE){
-            if(entity.internal_bottleCount > 0 && entity.fluid instanceof PotionFluid && !world.isClient){
-                if(!player.abilities.creativeMode){
-                    ItemStack potionItem = PotionUtil.setPotion(new ItemStack(Items.POTION), ((PotionFluid)entity.fluid).getPotion());
-                    player.incrementStat(Stats.USE_CAULDRON);
-                    heldItem.decrement(1);
-                    if (heldItem.isEmpty()) {
-                        player.setStackInHand(hand, potionItem);
-                    } else if (!player.inventory.insertStack(potionItem)) {
-                        player.dropItem(potionItem, false);
-                    } else if (player instanceof ServerPlayerEntity) {
-                        ((ServerPlayerEntity)player).openContainer(player.playerContainer);
+            if(entity.internal_bottleCount > 0 && entity.fluid instanceof PotionFluid) {
+                if (!world.isClient){
+                    if (!player.abilities.creativeMode) {
+                        ItemStack potionItem = PotionUtil.setPotion(new ItemStack(Items.POTION), ((PotionFluid) entity.fluid).getPotion());
+                        player.incrementStat(Stats.USE_CAULDRON);
+                        heldItem.decrement(1);
+                        if (heldItem.isEmpty()) {
+                            player.setStackInHand(hand, potionItem);
+                        } else if (!player.inventory.insertStack(potionItem)) {
+                            player.dropItem(potionItem, false);
+                        } else if (player instanceof ServerPlayerEntity) {
+                            ((ServerPlayerEntity) player).openHandledScreen(player.playerScreenHandler);
+                        }
                     }
+                    world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                    entity.takeBottle();
                 }
-                world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                entity.takeBottle();
-                return ActionResult.SUCCESS;
+                return ActionResult.method_29236(world.isClient);
             }
         }
         return ActionResult.PASS;
