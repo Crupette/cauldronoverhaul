@@ -1,7 +1,7 @@
 package me.crupette.cauldronoverhaul.actions;
 
 import me.crupette.cauldronoverhaul.block.CauldronBlockEntity;
-import me.crupette.cauldronoverhaul.util.BucketActionTransformer;
+import me.crupette.cauldronoverhaul.transformer.BucketActionTransformer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;

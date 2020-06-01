@@ -1,7 +1,7 @@
-package me.crupette.cauldronoverhaul.fluidpotions;
+package me.crupette.cauldronoverhaul.fluidpotions.transformers;
 
 import me.crupette.cauldronoverhaul.block.CauldronBlockEntity;
-import me.crupette.cauldronoverhaul.util.CauldronBlockTransformer;
+import me.crupette.cauldronoverhaul.transformer.CauldronBlockTransformer;
 import me.crupette.fluidpotions.fluid.PotionFluid;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;

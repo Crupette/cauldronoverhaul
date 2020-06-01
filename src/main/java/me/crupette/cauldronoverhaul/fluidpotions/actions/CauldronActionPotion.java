@@ -1,10 +1,16 @@
-package me.crupette.cauldronoverhaul.fluidpotions;
+package me.crupette.cauldronoverhaul.fluidpotions.actions;
 
 import me.crupette.cauldronoverhaul.actions.ICauldronAction;
 import me.crupette.cauldronoverhaul.block.CauldronBlockEntity;
+import me.crupette.cauldronoverhaul.transformer.BucketActionTransformer;
+import me.crupette.cauldronoverhaul.transformer.CauldronBlockTransformer;
 import me.crupette.fluidpotions.FluidPotions;
 import me.crupette.fluidpotions.fluid.PotionFluid;
 import me.crupette.fluidpotions.item.PotionBucketItem;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
@@ -13,7 +19,6 @@ import net.minecraft.item.Items;
 import net.minecraft.item.PotionItem;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
-import net.minecraft.potion.Potions;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -27,7 +32,7 @@ public class CauldronActionPotion implements ICauldronAction {
     @Override
     public ActionResult onUse(CauldronBlockEntity entity, World world, BlockPos pos, PlayerEntity player, Hand hand) {
         ItemStack heldItem = player.getStackInHand(hand);
-        if(heldItem.getItem() instanceof PotionBucketItem) {
+        if (heldItem.getItem() instanceof PotionBucketItem) {
             Fluid fluid = FluidPotions.INSTANCE.getStill(PotionUtil.getPotion(heldItem));
             if (entity.level < 1000 && (entity.fluid == Fluids.EMPTY || fluid == entity.fluid) && !world.isClient) {
 

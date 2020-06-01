@@ -30,6 +30,9 @@ public class CauldronBlockEntity extends BlockEntity implements BlockEntityClien
         this.fluid = Fluids.EMPTY;
         this.level = 0;
         this.internal_bottleCount = 0;
+        this.ingredient = ItemStack.EMPTY;
+        this.timeLeft = 0;
+        this.brewTimeLeft = 0;
     }
 
     @Override
@@ -37,28 +40,44 @@ public class CauldronBlockEntity extends BlockEntity implements BlockEntityClien
         this.level = compoundTag.getInt("level");
         this.internal_bottleCount = this.level / 333;
         this.fluid = Registry.FLUID.get(new Identifier(compoundTag.getString("fluid")));
+
+        this.ingredient = ItemStack.fromTag(compoundTag.getCompound("ingredient"));
+        this.timeLeft = compoundTag.getInt("timeLeft");
+        this.brewTimeLeft = compoundTag.getInt("brewTimeLeft");
     }
 
     @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
-        super.fromTag(state, tag);
-        this.level = tag.getInt("level");
+    public void fromTag(CompoundTag compoundTag) {
+        super.fromTag(compoundTag);
+        this.level = compoundTag.getInt("level");
         this.internal_bottleCount = this.level / 333;
-        this.fluid = Registry.FLUID.get(new Identifier(tag.getString("fluid")));
+        this.fluid = Registry.FLUID.get(new Identifier(compoundTag.getString("fluid")));
     }
 
     @Override
     public CompoundTag toClientTag(CompoundTag compoundTag) {
         compoundTag.putInt("level", this.level);
         compoundTag.putString("fluid", Registry.FLUID.getId(this.fluid).toString());
+
+        CompoundTag ingredientTag = new CompoundTag();
+        this.ingredient.toTag(ingredientTag);
+        compoundTag.put("ingredient", ingredientTag);
+        compoundTag.putInt("timeLeft", this.timeLeft);
+        compoundTag.putInt("brewTimeLeft", this.brewTimeLeft);
         return compoundTag;
     }
 
     @Override
     public CompoundTag toTag(CompoundTag tag){
-        tag = super.toTag(tag);
+        super.toTag(tag);
         tag.putInt("level", this.level);
         tag.putString("fluid", Registry.FLUID.getId(this.fluid).toString());
+
+        CompoundTag ingredientTag = new CompoundTag();
+        this.ingredient.toTag(ingredientTag);
+        tag.put("ingredient", ingredientTag);
+        tag.putInt("timeLeft", this.timeLeft);
+        tag.putInt("brewTimeLeft", this.brewTimeLeft);
         return tag;
     }
 
@@ -97,5 +116,10 @@ public class CauldronBlockEntity extends BlockEntity implements BlockEntityClien
             this.level = 1000;
         }
         this.markDirty();
+    }
+
+    @Override
+    public void tick() {
+        CauldronBlockEntityTransformer.onTick(this, this.world, this.pos);
     }
 }

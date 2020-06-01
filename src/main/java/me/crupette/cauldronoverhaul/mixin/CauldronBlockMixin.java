@@ -1,7 +1,9 @@
 package me.crupette.cauldronoverhaul.mixin;
 
 import me.crupette.cauldronoverhaul.block.CauldronBlockEntity;
-import me.crupette.cauldronoverhaul.util.CauldronBlockTransformer;
+import me.crupette.cauldronoverhaul.transformer.CauldronBlockTransformer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
@@ -12,6 +14,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -23,6 +26,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+
+import java.util.Random;
 
 @Mixin(CauldronBlock.class)
 public abstract class CauldronBlockMixin extends Block implements BlockEntityProvider {
@@ -67,5 +72,21 @@ public abstract class CauldronBlockMixin extends Block implements BlockEntityPro
     @Override
     public BlockEntity createBlockEntity(BlockView view){
         return new CauldronBlockEntity();
+    }
+
+    @Override
+    @Environment(EnvType.CLIENT)
+    public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
+        super.randomDisplayTick(state, world, pos, random);
+        if(!(world.getBlockEntity(pos) instanceof CauldronBlockEntity)) return;
+        CauldronBlockEntity entity = (CauldronBlockEntity) world.getBlockEntity(pos);
+        if(entity.timeLeft > 0){
+            float x = pos.getX() + 0.1f + (random.nextFloat() * 0.8f);
+            float y = pos.getY() + 1.f + (random.nextFloat() * 0.1f);
+            float z = pos.getZ() + 0.1f + (random.nextFloat() * 0.8f);
+            System.out.println(x + " " + y + " " + z);
+
+            world.addParticle(ParticleTypes.FLAME, x, y, z, 0, 0, 0);
+        }
     }
 }
