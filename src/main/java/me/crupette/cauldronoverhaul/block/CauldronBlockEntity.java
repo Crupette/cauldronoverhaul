@@ -3,6 +3,7 @@ package me.crupette.cauldronoverhaul.block;
 import me.crupette.cauldronoverhaul.CauldronOverhaul;
 import me.crupette.cauldronoverhaul.actions.CauldronActions;
 import me.crupette.cauldronoverhaul.actions.ICauldronAction;
+import me.crupette.cauldronoverhaul.transformer.CauldronBlockEntityTransformer;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -14,15 +15,20 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Tickable;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
-public class CauldronBlockEntity extends BlockEntity implements BlockEntityClientSerializable {
+public class CauldronBlockEntity extends BlockEntity implements BlockEntityClientSerializable, Tickable {
     public Fluid fluid;
     public int level;
     public int internal_bottleCount;
+
+    public ItemStack ingredient;
+    public int timeLeft;
+    public int brewTimeLeft;
 
     public CauldronBlockEntity() {
         super(CauldronOverhaul.CAULDRON_BLOCK_ENTITY);
@@ -47,11 +53,15 @@ public class CauldronBlockEntity extends BlockEntity implements BlockEntityClien
     }
 
     @Override
-    public void fromTag(CompoundTag compoundTag) {
-        super.fromTag(compoundTag);
+    public void fromTag(BlockState state, CompoundTag compoundTag) {
+        super.fromTag(state, compoundTag);
         this.level = compoundTag.getInt("level");
         this.internal_bottleCount = this.level / 333;
         this.fluid = Registry.FLUID.get(new Identifier(compoundTag.getString("fluid")));
+
+        this.ingredient = ItemStack.fromTag(compoundTag.getCompound("ingredient"));
+        this.timeLeft = compoundTag.getInt("timeLeft");
+        this.brewTimeLeft = compoundTag.getInt("brewTimeLeft");
     }
 
     @Override
@@ -69,7 +79,7 @@ public class CauldronBlockEntity extends BlockEntity implements BlockEntityClien
 
     @Override
     public CompoundTag toTag(CompoundTag tag){
-        super.toTag(tag);
+        tag = super.toTag(tag);
         tag.putInt("level", this.level);
         tag.putString("fluid", Registry.FLUID.getId(this.fluid).toString());
 
@@ -86,6 +96,7 @@ public class CauldronBlockEntity extends BlockEntity implements BlockEntityClien
         for(ICauldronAction action : CauldronActions.getCauldronActions()){
             ActionResult result = action.onUse(this, world, pos, player, hand);
             if(!result.equals(ActionResult.PASS)) {
+                System.out.println("Breaking on " + action.getClass().getName());
                 if(!world.isClient) this.sync();
                 return result;
             }

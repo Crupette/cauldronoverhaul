@@ -26,10 +26,12 @@ public class CauldronActionIngredient implements ICauldronAction {
     public ActionResult onUse(CauldronBlockEntity entity, World world, BlockPos pos, PlayerEntity player, Hand hand) {
         ItemStack heldItem = player.getStackInHand(hand);
         if(entity.fluid == Fluids.EMPTY) return ActionResult.PASS;
+        System.out.println(heldItem + " + " + entity.fluid);
         if(BrewingRecipeRegistry.hasRecipe(
                 PotionUtil.setPotion(new ItemStack(Items.POTION), entity.fluid.matchesType(Fluids.WATER) ? Potions.WATER :
                         (entity.fluid instanceof PotionFluid ? ((PotionFluid)entity.fluid).getPotion() : Potions.EMPTY)),
                 heldItem)){
+            System.out.println("OK");
             if(entity.ingredient.isEmpty()){
                 if(!world.isClient){
                     Item ingredient = heldItem.getItem();
@@ -41,7 +43,7 @@ public class CauldronActionIngredient implements ICauldronAction {
                     entity.sync();
                 }
                 world.playSound(null, pos, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.BLOCKS, 1.f, 1.f);
-                return ActionResult.SUCCESS;
+                return ActionResult.method_29236(world.isClient);
             }
         }
         return ActionResult.PASS;

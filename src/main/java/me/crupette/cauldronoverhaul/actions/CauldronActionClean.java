@@ -55,18 +55,20 @@ public class CauldronActionClean implements ICauldronAction{
 
         if(itemStack.getItem() instanceof BlockItem){
             Block block = ((BlockItem) itemStack.getItem()).getBlock();
-            if(block instanceof ShulkerBoxBlock && !world.isClient) {
-                ItemStack shulkerCopy = new ItemStack(Items.SHULKER_BOX, 1);
-                if(itemStack.hasTag()){
-                    shulkerCopy.setTag(itemStack.getTag().copy());
-                }
+            if(block instanceof ShulkerBoxBlock) {
+                if(!world.isClient) {
+                    ItemStack shulkerCopy = new ItemStack(Items.SHULKER_BOX, 1);
+                    if (itemStack.hasTag()) {
+                        shulkerCopy.setTag(itemStack.getTag().copy());
+                    }
 
-                player.setStackInHand(hand, shulkerCopy);
-                entity.takeBottle();
-                player.incrementStat(Stats.CLEAN_SHULKER_BOX);
-                world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                    player.setStackInHand(hand, shulkerCopy);
+                    entity.takeBottle();
+                    player.incrementStat(Stats.CLEAN_SHULKER_BOX);
+                    world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                }
+                return ActionResult.method_29236(world.isClient);
             }
-            return ActionResult.method_29236(world.isClient);
         }
         return ActionResult.PASS;
     }
