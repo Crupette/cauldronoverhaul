@@ -11,7 +11,7 @@ import java.util.List;
 
 //Transformer for CauldronBlockMixin / CauldronBlock
 public class CauldronBlockTransformer {
-    private static List<Entry> transformers = new ArrayList<>();
+    private static final List<Entry> transformers = new ArrayList<>();
 
     public static void addTransformer(Entry entry){
         transformers.add(entry);

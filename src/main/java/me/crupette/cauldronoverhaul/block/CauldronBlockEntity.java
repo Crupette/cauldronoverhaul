@@ -107,20 +107,19 @@ public class CauldronBlockEntity extends BlockEntity implements BlockEntityClien
     public void setLevel(int level){
         this.internal_bottleCount = level / 333;
         this.level = level;
+        if(level == 0) this.fluid = Fluids.EMPTY;
         this.markDirty();
     }
 
     public void takeBottle(){
+        if(this.level < 333) return;
         this.internal_bottleCount--;
-        this.level -= 333;
-        if(this.internal_bottleCount == 0){
-            this.level = 0;
-            this.fluid = Fluids.EMPTY;
-        }
-        this.markDirty();
+        this.setLevel(this.level - 333);
     }
 
     public void insertBottle(){
+        if(this.level >= 1000) return;
+        if(this.fluid == Fluids.EMPTY) this.fluid = Fluids.WATER;
         this.internal_bottleCount++;
         this.level += 333;
         if(this.internal_bottleCount == 3){

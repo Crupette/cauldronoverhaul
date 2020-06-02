@@ -8,7 +8,7 @@ import java.util.List;
 
 //Transformer for CauldronActionBucket
 public class BucketActionTransformer {
-    private static List<Entry> transformers = new ArrayList<>();
+    private static final List<Entry> transformers = new ArrayList<>();
 
     public static void addTransformer(Entry entry){
         transformers.add(entry);

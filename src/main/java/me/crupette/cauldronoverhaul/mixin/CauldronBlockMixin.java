@@ -22,6 +22,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -88,5 +89,29 @@ public abstract class CauldronBlockMixin extends Block implements BlockEntityPro
 
             world.addParticle(ParticleTypes.FLAME, x, y, z, 0, 0, 0);
         }
+    }
+
+    @Override
+    public void rainTick(World world, BlockPos pos) {
+        if (world.random.nextInt(20) == 1) {
+            BlockEntity blockEntity = world.getBlockEntity(pos);
+            if(!(blockEntity instanceof CauldronBlockEntity)) return;
+            CauldronBlockEntity cauldronBlockEntity = (CauldronBlockEntity)blockEntity;
+            float f = world.getBiome(pos).getTemperature(pos);
+            if (f >= 0.15F &&
+                    cauldronBlockEntity.fluid == Fluids.WATER || cauldronBlockEntity.fluid == Fluids.EMPTY) {
+                cauldronBlockEntity.insertBottle();
+            }
+        }
+    }
+
+    @Override
+    public boolean hasComparatorOutput(BlockState state) {
+        return true;
+    }
+
+    @Override
+    public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
+        return ((CauldronBlockEntity)world.getBlockEntity(pos)).internal_bottleCount;
     }
 }
