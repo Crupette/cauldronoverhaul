@@ -28,22 +28,23 @@ public class CauldronActionPotion implements ICauldronAction {
         ItemStack heldItem = player.getStackInHand(hand);
         if (heldItem.getItem() instanceof PotionBucketItem) {
             Fluid fluid = FluidPotions.getStill(PotionUtil.getPotion(heldItem));
-            if (entity.level < 1000 && (entity.fluid == Fluids.EMPTY || fluid == entity.fluid) && !world.isClient) {
-
-                if (!player.abilities.creativeMode) {
-                    player.setStackInHand(hand, new ItemStack(Items.BUCKET));
+            if(entity.level_numerator < entity.level_denominator) {
+                if (entity.fill(entity.level_denominator - entity.level_numerator, entity.level_denominator, fluid, false)) {
+                    if (!world.isClient) {
+                        if (!player.abilities.creativeMode) {
+                            player.setStackInHand(hand, new ItemStack(Items.BUCKET));
+                        }
+                        player.incrementStat(Stats.FILL_CAULDRON);
+                        world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                    }
+                    entity.markDirty();
+                    return ActionResult.method_29236(world.isClient);
                 }
-                player.incrementStat(Stats.FILL_CAULDRON);
-                entity.fluid = fluid;
-                entity.setLevel(1000);
-                entity.sync();
-                world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
             }
-            return ActionResult.method_29236(world.isClient);
         }else if(heldItem.getItem() instanceof PotionItem){
             Potion potion = PotionUtil.getPotion(heldItem);
             PotionFluid fluid = FluidPotions.getStill(potion);
-            if(entity.internal_bottleCount < 3 && (entity.fluid == Fluids.EMPTY || fluid == entity.fluid)){
+            if(entity.insertBottle(fluid, false)){
                 if(!world.isClient) {
                     if (!player.abilities.creativeMode) {
                         ItemStack glassBottle = new ItemStack(Items.GLASS_BOTTLE);
@@ -54,13 +55,11 @@ public class CauldronActionPotion implements ICauldronAction {
                         }
                     }
                     world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                    entity.fluid = fluid;
-                    entity.insertBottle();
                 }
                 return ActionResult.method_29236(world.isClient);
             }
         }else if(heldItem.getItem() == Items.GLASS_BOTTLE){
-            if(entity.internal_bottleCount > 0 && entity.fluid instanceof PotionFluid) {
+            if(entity.fluid instanceof PotionFluid && entity.takeBottle(true)) {
                 if (!world.isClient){
                     if (!player.abilities.creativeMode) {
                         ItemStack potionItem = PotionUtil.setPotion(new ItemStack(Items.POTION), ((PotionFluid) entity.fluid).getPotion());
@@ -74,8 +73,8 @@ public class CauldronActionPotion implements ICauldronAction {
                             ((ServerPlayerEntity) player).openHandledScreen(player.playerScreenHandler);
                         }
                     }
+                    entity.takeBottle(false);
                     world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                    entity.takeBottle();
                 }
                 return ActionResult.method_29236(world.isClient);
             }

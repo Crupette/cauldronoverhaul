@@ -23,12 +23,10 @@ public class CauldronActionIngredient implements ICauldronAction {
     public ActionResult onUse(CauldronBlockEntity entity, World world, BlockPos pos, PlayerEntity player, Hand hand) {
         ItemStack heldItem = player.getStackInHand(hand);
         if(entity.fluid == Fluids.EMPTY) return ActionResult.PASS;
-        System.out.println(heldItem + " + " + entity.fluid);
         if(BrewingRecipeRegistry.hasRecipe(
                 PotionUtil.setPotion(new ItemStack(Items.POTION), entity.fluid.matchesType(Fluids.WATER) ? Potions.WATER :
                         (entity.fluid instanceof PotionFluid ? ((PotionFluid)entity.fluid).getPotion() : Potions.EMPTY)),
                 heldItem)){
-            System.out.println("OK");
             if(entity.ingredient.isEmpty()){
                 if(!world.isClient){
                     Item ingredient = heldItem.getItem();

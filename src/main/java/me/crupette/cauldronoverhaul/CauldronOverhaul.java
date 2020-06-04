@@ -21,8 +21,8 @@ public class CauldronOverhaul implements ModInitializer {
 
     public static Logger LOGGER = LogManager.getLogger();
 
-    public static final String MOD_ID = "cauldroncontainer";
-    public static final String MOD_NAME = "Cauldron Container";
+    public static final String MOD_ID = "cauldronoverhaul";
+    public static final String MOD_NAME = "Cauldron Overhaul";
 
     public static BlockEntityType<CauldronBlockEntity> CAULDRON_BLOCK_ENTITY;
 
@@ -41,7 +41,7 @@ public class CauldronOverhaul implements ModInitializer {
     }
 
     public static void log(Level level, String message){
-        LOGGER.log(level, "["+MOD_NAME+"] " + message);
+        LOGGER.log(level, message);
     }
 
 }

@@ -1,5 +1,6 @@
 package me.crupette.cauldronoverhaul.actions;
 
+import me.crupette.cauldronoverhaul.CauldronOverhaul;
 import me.crupette.cauldronoverhaul.block.CauldronBlockEntity;
 import me.crupette.cauldronoverhaul.transformer.BucketActionTransformer;
 import net.minecraft.entity.player.PlayerEntity;
@@ -16,6 +17,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import org.apache.logging.log4j.Level;
 
 import java.util.stream.Collectors;
 
@@ -36,10 +38,10 @@ public class CauldronActionBucket implements ICauldronAction{
                 }
             }
             fluid = BucketActionTransformer.onBucketEmpty(itemStack, fluid);
-            if(fluid == Fluids.EMPTY) return ActionResult.PASS;
+            CauldronOverhaul.log(Level.INFO, "Got fluid " + fluid + " : level " + entity.level_numerator + "/" + entity.level_denominator);
 
             if(bucket == Items.BUCKET){
-                if(entity.level == 1000){
+                if(entity.drain(1, 1, true)){
                     if(!world.isClient) {
                         if (!player.abilities.creativeMode) {
                             itemStack.decrement(1);
@@ -52,25 +54,24 @@ public class CauldronActionBucket implements ICauldronAction{
                             }
                         }
                         player.incrementStat(Stats.USE_CAULDRON);
-                        entity.fluid = Fluids.EMPTY;
-                        entity.setLevel(0);
-                        entity.markDirty();
+                        entity.drain(1, 1, false);
                         world.playSound(null, pos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     }
+                    entity.markDirty();
                     return ActionResult.method_29236(world.isClient);
                 }
-            }else if(entity.level < 1000 && (entity.fluid == Fluids.EMPTY || fluid == entity.fluid)) {
-                if (!world.isClient) {
-                    if (!player.abilities.creativeMode) {
-                        player.setStackInHand(hand, new ItemStack(Items.BUCKET));
+            }else if(fluid != Fluids.EMPTY && entity.level_numerator < entity.level_denominator) {
+                if (entity.fill(entity.level_denominator - entity.level_numerator, entity.level_denominator, fluid, false)) {
+                    if (!world.isClient) {
+                        if (!player.abilities.creativeMode) {
+                            player.setStackInHand(hand, new ItemStack(Items.BUCKET));
+                        }
+                        player.incrementStat(Stats.FILL_CAULDRON);
+                        world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     }
-                    player.incrementStat(Stats.FILL_CAULDRON);
-                    entity.fluid = fluid;
-                    entity.setLevel(1000);
                     entity.markDirty();
-                    world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                    return ActionResult.method_29236(world.isClient);
                 }
-                return ActionResult.method_29236(world.isClient);
             }
         }
         return ActionResult.PASS;
