@@ -25,7 +25,7 @@ public class CauldronActionFuel implements ICauldronAction {
                 world.playSound(null, pos, SoundEvents.BLOCK_FURNACE_FIRE_CRACKLE, SoundCategory.BLOCKS, 1.f, 1.f);
                 entity.sync();
             }
-            return ActionResult.method_29236(world.isClient);
+            return ActionResult.SUCCESS;
         }
         return ActionResult.PASS;
     }

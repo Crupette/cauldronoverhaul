@@ -29,8 +29,8 @@ dependencies {
 
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
-	modCompileOnly 'com.github.Crupette:fluidpotions:master-SNAPSHOT'
-	modRuntime 'com.github.Crupette:fluidpotions:master-SNAPSHOT'
+	modCompileOnly 'com.github.Crupette:fluidpotions:1.15.2-SNAPSHOT'
+	modRuntime 'com.github.Crupette:fluidpotions:1.15.2-SNAPSHOT'
 
 }
 

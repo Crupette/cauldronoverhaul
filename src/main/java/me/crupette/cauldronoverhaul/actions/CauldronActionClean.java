@@ -29,7 +29,7 @@ public class CauldronActionClean implements ICauldronAction{
                 entity.takeBottle(false);
                 world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
             }
-            return ActionResult.method_29236(world.isClient);
+            return ActionResult.SUCCESS;
         }
         if(itemStack.getItem() instanceof BannerItem){
             if(BannerBlockEntity.getPatternCount(itemStack) > 0 && !world.isClient){
@@ -46,11 +46,11 @@ public class CauldronActionClean implements ICauldronAction{
                 }else if(!player.inventory.insertStack(bannerCopy)){
                     player.dropItem(bannerCopy, false);
                 }else if(player instanceof ServerPlayerEntity){
-                    ((ServerPlayerEntity)player).openHandledScreen(player.playerScreenHandler);
+                    ((ServerPlayerEntity)player).openContainer(player.playerContainer);
                 }
             }
             world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
-            return ActionResult.method_29236(world.isClient);
+            return ActionResult.SUCCESS;
         }
 
         if(itemStack.getItem() instanceof BlockItem){
@@ -67,7 +67,7 @@ public class CauldronActionClean implements ICauldronAction{
                     player.incrementStat(Stats.CLEAN_SHULKER_BOX);
                     world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 }
-                return ActionResult.method_29236(world.isClient);
+                return ActionResult.SUCCESS;
             }
         }
         return ActionResult.PASS;

@@ -58,8 +58,8 @@ public class CauldronBlockEntity extends BlockEntity implements BlockEntityClien
     }
 
     @Override
-    public void fromTag(BlockState state, CompoundTag compoundTag) {
-        super.fromTag(state, compoundTag);
+    public void fromTag(CompoundTag compoundTag) {
+        super.fromTag(compoundTag);
         this.level_numerator = compoundTag.getInt("numerator");
         this.level_denominator = compoundTag.getInt("denominator");
 

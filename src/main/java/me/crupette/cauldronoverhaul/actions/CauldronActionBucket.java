@@ -38,7 +38,6 @@ public class CauldronActionBucket implements ICauldronAction{
                 }
             }
             fluid = BucketActionTransformer.onBucketEmpty(itemStack, fluid);
-            if(fluid == Fluids.EMPTY) return ActionResult.PASS;
 
             if(bucket == Items.BUCKET){
                 if(entity.drain(1, 1, true)){
@@ -58,9 +57,9 @@ public class CauldronActionBucket implements ICauldronAction{
                         world.playSound(null, pos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     }
                     entity.markDirty();
-                    return ActionResult.method_29236(world.isClient);
+                    return ActionResult.SUCCESS;
                 }
-            }else if(fluid != Fluids.EMPTY && entity.level_numerator < entity.level_denominator) {
+            }else if(fluid != Fluids.EMPTY || entity.level_numerator < entity.level_denominator) {
                 if (entity.fill(entity.level_denominator - entity.level_numerator, entity.level_denominator, fluid, false)) {
                     if (!world.isClient) {
                         if (!player.abilities.creativeMode) {
@@ -70,7 +69,7 @@ public class CauldronActionBucket implements ICauldronAction{
                         world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     }
                     entity.markDirty();
-                    return ActionResult.method_29236(world.isClient);
+                    return ActionResult.SUCCESS;
                 }
             }
         }
