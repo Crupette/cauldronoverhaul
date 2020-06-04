@@ -96,7 +96,6 @@ public class CauldronBlockEntity extends BlockEntity implements BlockEntityClien
         for(ICauldronAction action : CauldronActions.getCauldronActions()){
             ActionResult result = action.onUse(this, world, pos, player, hand);
             if(!result.equals(ActionResult.PASS)) {
-                System.out.println("Breaking on " + action.getClass().getName());
                 if(!world.isClient) this.sync();
                 return result;
             }

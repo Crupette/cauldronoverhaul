@@ -36,6 +36,7 @@ public class CauldronActionBucket implements ICauldronAction{
                 }
             }
             fluid = BucketActionTransformer.onBucketEmpty(itemStack, fluid);
+            if(fluid == Fluids.EMPTY) return ActionResult.PASS;
 
             if(bucket == Items.BUCKET){
                 if(entity.level == 1000){
