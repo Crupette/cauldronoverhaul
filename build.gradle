@@ -76,7 +76,7 @@ curseforge {
 		id = '386608'
 		changelog = project.changelog
 		releaseType = 'release'
-		addGameVersion '1.16-Snapshot'
+		addGameVersion '1.15.2'
 		addGameVersion 'Java 8'
 		addGameVersion 'Fabric'
 		relations {
