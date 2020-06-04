@@ -38,7 +38,6 @@ public class CauldronActionBucket implements ICauldronAction{
                 }
             }
             fluid = BucketActionTransformer.onBucketEmpty(itemStack, fluid);
-            CauldronOverhaul.log(Level.INFO, "Got fluid " + fluid + " : level " + entity.level_numerator + "/" + entity.level_denominator);
 
             if(bucket == Items.BUCKET){
                 if(entity.drain(1, 1, true)){

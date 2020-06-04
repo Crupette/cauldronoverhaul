@@ -136,7 +136,6 @@ public class CauldronBlockEntity extends BlockEntity implements BlockEntityClien
         if(denominator != this.level_denominator){
             numerator *= (this.level_denominator / denominator);
         }
-        CauldronOverhaul.log(Level.INFO, "Attempting drain of fluid " + this.fluid + " by " + numerator + "/" + denominator);
         if(this.level_numerator < numerator) return false;
         if(!simulate) {
             this.level_numerator -= numerator;
