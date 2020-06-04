@@ -12,12 +12,12 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.math.Matrix3f;
-import net.minecraft.client.util.math.Matrix4f;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Matrix3f;
+import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.registry.Registry;
 
 public class CauldronBER extends BlockEntityRenderer<CauldronBlockEntity> {
@@ -50,7 +50,7 @@ public class CauldronBER extends BlockEntityRenderer<CauldronBlockEntity> {
         int fluidG = (fluidColor >> 8) & 0xFF;
         int fluidB = (fluidColor >> 0) & 0xFF;
 
-        float height = (0.25f) + ((0.7f) * (blockEntity.level / 1000.f));
+        float height = (0.25f) + ((0.7f) * ((float)blockEntity.level_numerator / (float)blockEntity.level_denominator));
         int fluidLight = fluidBlock.getLuminance() > 0 ? 15728880 : light;
 
         Sprite fluidSprite = fluidHandler.getFluidSprites(null, null, fluid.getDefaultState())[0];

@@ -29,10 +29,8 @@ dependencies {
 
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
-	modCompileOnly 'com.github.Crupette:fluidpotions:1.15.2-SNAPSHOT'
-	modRuntime 'com.github.Crupette:fluidpotions:1.15.2-SNAPSHOT'
-
-	modRuntime 'io.github.prospector:modmenu:1.10.2+build.35'
+	modCompileOnly 'com.github.Crupette:fluidpotions:master-SNAPSHOT'
+	modRuntime 'com.github.Crupette:fluidpotions:master-SNAPSHOT'
 
 }
 
@@ -78,7 +76,7 @@ curseforge {
 		id = '386608'
 		changelog = project.changelog
 		releaseType = 'release'
-		addGameVersion '1.15.2'
+		addGameVersion '1.16-Snapshot'
 		addGameVersion 'Java 8'
 		addGameVersion 'Fabric'
 		relations {

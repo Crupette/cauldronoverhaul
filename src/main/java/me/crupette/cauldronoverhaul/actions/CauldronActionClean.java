@@ -20,16 +20,16 @@ public class CauldronActionClean implements ICauldronAction{
     @Override
     public ActionResult onUse(CauldronBlockEntity entity, World world, BlockPos pos, PlayerEntity player, Hand hand) {
         ItemStack itemStack = player.getStackInHand(hand);
-        if(entity.fluid != Fluids.WATER || entity.internal_bottleCount == 0) return ActionResult.PASS;
+        if(entity.fluid != Fluids.WATER || !entity.takeBottle(true)) return ActionResult.PASS;
         if(itemStack.getItem() instanceof DyeableItem){
             DyeableItem dyeableItem = (DyeableItem)itemStack.getItem();
             if(dyeableItem.hasColor(itemStack) && !world.isClient){
                 dyeableItem.removeColor(itemStack);
-                entity.takeBottle();
                 player.incrementStat(Stats.CLEAN_ARMOR);
+                entity.takeBottle(false);
                 world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                return ActionResult.SUCCESS;
             }
+            return ActionResult.method_29236(world.isClient);
         }
         if(itemStack.getItem() instanceof BannerItem){
             if(BannerBlockEntity.getPatternCount(itemStack) > 0 && !world.isClient){
@@ -39,33 +39,35 @@ public class CauldronActionClean implements ICauldronAction{
                 player.incrementStat(Stats.CLEAN_BANNER);
                 if(!player.abilities.creativeMode){
                     itemStack.decrement(1);
-                    entity.takeBottle();
+                    entity.takeBottle(false);
                 }
                 if(itemStack.isEmpty()){
                     player.setStackInHand(hand, bannerCopy);
                 }else if(!player.inventory.insertStack(bannerCopy)){
                     player.dropItem(bannerCopy, false);
                 }else if(player instanceof ServerPlayerEntity){
-                    ((ServerPlayerEntity)player).openContainer(player.playerContainer);
+                    ((ServerPlayerEntity)player).openHandledScreen(player.playerScreenHandler);
                 }
             }
             world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
-            return ActionResult.SUCCESS;
+            return ActionResult.method_29236(world.isClient);
         }
 
         if(itemStack.getItem() instanceof BlockItem){
             Block block = ((BlockItem) itemStack.getItem()).getBlock();
-            if(block instanceof ShulkerBoxBlock && !world.isClient) {
-                ItemStack shulkerCopy = new ItemStack(Items.SHULKER_BOX, 1);
-                if(itemStack.hasTag()){
-                    shulkerCopy.setTag(itemStack.getTag().copy());
-                }
+            if(block instanceof ShulkerBoxBlock) {
+                if(!world.isClient) {
+                    ItemStack shulkerCopy = new ItemStack(Items.SHULKER_BOX, 1);
+                    if (itemStack.hasTag()) {
+                        shulkerCopy.setTag(itemStack.getTag().copy());
+                    }
 
-                player.setStackInHand(hand, shulkerCopy);
-                entity.takeBottle();
-                player.incrementStat(Stats.CLEAN_SHULKER_BOX);
-                world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                return ActionResult.SUCCESS;
+                    player.setStackInHand(hand, shulkerCopy);
+                    entity.takeBottle(false);
+                    player.incrementStat(Stats.CLEAN_SHULKER_BOX);
+                    world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                }
+                return ActionResult.method_29236(world.isClient);
             }
         }
         return ActionResult.PASS;

@@ -22,7 +22,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -60,7 +59,7 @@ public abstract class CauldronBlockMixin extends Block implements BlockEntityPro
         CauldronBlockEntity blockEntity = (CauldronBlockEntity)world.getBlockEntity(pos);
         if(blockEntity.fluid == Fluids.EMPTY)
             return;
-        float fluidHeight = pos.getY() + (0.25f) + ((0.7f) * (blockEntity.level / 1000.f));
+        float fluidHeight = pos.getY() + (0.25f) + ((0.7f) * ((float)blockEntity.level_numerator / (float)blockEntity.level_denominator));
         if (!world.isClient && entity.getY() <= (double)fluidHeight) {
             if(CauldronBlockTransformer.onEntityCollision(state, world, pos, entity, blockEntity)) return;
             blockEntity.fluid.getDefaultState().getBlockState().onEntityCollision(world, pos, entity);
@@ -85,7 +84,6 @@ public abstract class CauldronBlockMixin extends Block implements BlockEntityPro
             float x = pos.getX() + 0.1f + (random.nextFloat() * 0.8f);
             float y = pos.getY() + 1.f + (random.nextFloat() * 0.1f);
             float z = pos.getZ() + 0.1f + (random.nextFloat() * 0.8f);
-            System.out.println(x + " " + y + " " + z);
 
             world.addParticle(ParticleTypes.FLAME, x, y, z, 0, 0, 0);
         }
@@ -98,9 +96,8 @@ public abstract class CauldronBlockMixin extends Block implements BlockEntityPro
             if(!(blockEntity instanceof CauldronBlockEntity)) return;
             CauldronBlockEntity cauldronBlockEntity = (CauldronBlockEntity)blockEntity;
             float f = world.getBiome(pos).getTemperature(pos);
-            if (f >= 0.15F &&
-                    cauldronBlockEntity.fluid == Fluids.WATER || cauldronBlockEntity.fluid == Fluids.EMPTY) {
-                cauldronBlockEntity.insertBottle();
+            if (f >= 0.15F) {
+                cauldronBlockEntity.insertBottle(Fluids.WATER, false);
             }
         }
     }
@@ -112,6 +109,6 @@ public abstract class CauldronBlockMixin extends Block implements BlockEntityPro
 
     @Override
     public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
-        return ((CauldronBlockEntity)world.getBlockEntity(pos)).internal_bottleCount;
+        return ((CauldronBlockEntity)world.getBlockEntity(pos)).level_numerator;
     }
 }

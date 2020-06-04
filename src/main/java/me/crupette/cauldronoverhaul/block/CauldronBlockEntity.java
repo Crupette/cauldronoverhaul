@@ -20,13 +20,14 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import org.apache.logging.log4j.Level;
 
 public class CauldronBlockEntity extends BlockEntity implements BlockEntityClientSerializable, Tickable {
-    public Fluid fluid;
-    public int level;
-    public int internal_bottleCount;
 
-    //For the sake of inbuilt compatibility
+    public Fluid fluid;
+    public int level_numerator;
+    public int level_denominator;
+
     public ItemStack ingredient;
     public int timeLeft;
     public int brewTimeLeft;
@@ -35,8 +36,8 @@ public class CauldronBlockEntity extends BlockEntity implements BlockEntityClien
         super(CauldronOverhaul.CAULDRON_BLOCK_ENTITY);
 
         this.fluid = Fluids.EMPTY;
-        this.level = 0;
-        this.internal_bottleCount = 0;
+        this.level_numerator = 0;
+        this.level_denominator = 1;
         this.ingredient = ItemStack.EMPTY;
         this.timeLeft = 0;
         this.brewTimeLeft = 0;
@@ -44,8 +45,11 @@ public class CauldronBlockEntity extends BlockEntity implements BlockEntityClien
 
     @Override
     public void fromClientTag(CompoundTag compoundTag) {
-        this.level = compoundTag.getInt("level");
-        this.internal_bottleCount = this.level / 333;
+        this.level_numerator = compoundTag.getInt("numerator");
+        this.level_denominator = compoundTag.getInt("denominator");
+
+        if(this.level_numerator > this.level_denominator) this.level_numerator = this.level_denominator;
+
         this.fluid = Registry.FLUID.get(new Identifier(compoundTag.getString("fluid")));
 
         this.ingredient = ItemStack.fromTag(compoundTag.getCompound("ingredient"));
@@ -54,10 +58,13 @@ public class CauldronBlockEntity extends BlockEntity implements BlockEntityClien
     }
 
     @Override
-    public void fromTag(CompoundTag compoundTag) {
-        super.fromTag(compoundTag);
-        this.level = compoundTag.getInt("level");
-        this.internal_bottleCount = this.level / 333;
+    public void fromTag(BlockState state, CompoundTag compoundTag) {
+        super.fromTag(state, compoundTag);
+        this.level_numerator = compoundTag.getInt("numerator");
+        this.level_denominator = compoundTag.getInt("denominator");
+
+        if(this.level_numerator > this.level_denominator) this.level_numerator = this.level_denominator;
+
         this.fluid = Registry.FLUID.get(new Identifier(compoundTag.getString("fluid")));
 
         this.ingredient = ItemStack.fromTag(compoundTag.getCompound("ingredient"));
@@ -67,7 +74,8 @@ public class CauldronBlockEntity extends BlockEntity implements BlockEntityClien
 
     @Override
     public CompoundTag toClientTag(CompoundTag compoundTag) {
-        compoundTag.putInt("level", this.level);
+        compoundTag.putInt("numerator", this.level_numerator);
+        compoundTag.putInt("denominator", this.level_denominator);
         compoundTag.putString("fluid", Registry.FLUID.getId(this.fluid).toString());
 
         CompoundTag ingredientTag = new CompoundTag();
@@ -80,8 +88,9 @@ public class CauldronBlockEntity extends BlockEntity implements BlockEntityClien
 
     @Override
     public CompoundTag toTag(CompoundTag tag){
-        super.toTag(tag);
-        tag.putInt("level", this.level);
+        tag = super.toTag(tag);
+        tag.putInt("numerator", this.level_numerator);
+        tag.putInt("denominator", this.level_denominator);
         tag.putString("fluid", Registry.FLUID.getId(this.fluid).toString());
 
         CompoundTag ingredientTag = new CompoundTag();
@@ -96,7 +105,7 @@ public class CauldronBlockEntity extends BlockEntity implements BlockEntityClien
                               PlayerEntity player, Hand hand, BlockHitResult hit, ItemStack itemStack){
         for(ICauldronAction action : CauldronActions.getCauldronActions()){
             ActionResult result = action.onUse(this, world, pos, player, hand);
-            if(result.equals(ActionResult.SUCCESS)) {
+            if(!result.equals(ActionResult.PASS)) {
                 if(!world.isClient) this.sync();
                 return result;
             }
@@ -105,27 +114,58 @@ public class CauldronBlockEntity extends BlockEntity implements BlockEntityClien
     }
 
     public void setLevel(int level){
-        this.internal_bottleCount = level / 333;
-        this.level = level;
-        if(level == 0) this.fluid = Fluids.EMPTY;
-        this.markDirty();
-    }
-
-    public void takeBottle(){
-        if(this.level < 333) return;
-        this.internal_bottleCount--;
-        this.setLevel(this.level - 333);
-    }
-
-    public void insertBottle(){
-        if(this.level >= 1000) return;
-        if(this.fluid == Fluids.EMPTY) this.fluid = Fluids.WATER;
-        this.internal_bottleCount++;
-        this.level += 333;
-        if(this.internal_bottleCount == 3){
-            this.level = 1000;
+        this.level_numerator = level;
+        if(this.level_numerator == 0){
+            this.fluid = Fluids.EMPTY;
         }
-        this.markDirty();
+    }
+
+    private void findNearestCommon(int denom){
+        int newdenom = 0;
+        if(level_denominator % denom == 0) { newdenom = level_denominator; } else
+        if(denom % level_denominator == 0) { newdenom = denom; } else
+            { newdenom = level_denominator * denom; }
+
+        int mult = newdenom / level_denominator;
+        this.level_numerator *= mult;
+        this.level_denominator = newdenom;
+    }
+
+    public boolean drain(int numerator, int denominator, boolean simulate){
+        findNearestCommon(denominator);
+        if(denominator != this.level_denominator){
+            numerator *= (this.level_denominator / denominator);
+        }
+        if(this.level_numerator < numerator) return false;
+        if(!simulate) {
+            this.level_numerator -= numerator;
+            if (this.level_numerator == 0) {
+                this.fluid = Fluids.EMPTY;
+            }
+        }
+        return true;
+    }
+
+    public boolean fill(int numerator, int denominator, Fluid fluid, boolean simulate){
+        findNearestCommon(denominator);
+        if(denominator != this.level_denominator){
+            numerator *= (this.level_denominator / denominator);
+        }
+        if(this.fluid != fluid && this.fluid != Fluids.EMPTY) return false;
+        if(this.level_denominator < this.level_numerator + numerator) return false;
+        if(!simulate) {
+            this.level_numerator += numerator;
+            this.fluid = fluid;
+        }
+        return true;
+    }
+
+    public boolean takeBottle(boolean simulate){
+        return this.drain(1, 3, simulate);
+    }
+
+    public boolean insertBottle(Fluid fluid, boolean simulate) {
+        return this.fill(1, 3, fluid, simulate);
     }
 
     @Override
