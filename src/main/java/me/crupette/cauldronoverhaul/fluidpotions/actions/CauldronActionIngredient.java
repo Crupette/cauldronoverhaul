@@ -38,7 +38,7 @@ public class CauldronActionIngredient implements ICauldronAction {
                     entity.sync();
                 }
                 world.playSound(null, pos, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.BLOCKS, 1.f, 1.f);
-                return ActionResult.method_29236(world.isClient);
+                return ActionResult.success(world.isClient);
             }
         }
         return ActionResult.PASS;

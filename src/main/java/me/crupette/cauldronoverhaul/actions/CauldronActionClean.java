@@ -20,7 +20,7 @@ public class CauldronActionClean implements ICauldronAction{
     @Override
     public ActionResult onUse(CauldronBlockEntity entity, World world, BlockPos pos, PlayerEntity player, Hand hand) {
         ItemStack itemStack = player.getStackInHand(hand);
-        if(entity.fluid != Fluids.WATER || !entity.takeBottle(true)) return ActionResult.PASS;
+        if(entity.fluid != Fluids.WATER || !entity.takeBottle(true) || entity.dyed) return ActionResult.PASS;
         if(itemStack.getItem() instanceof DyeableItem){
             DyeableItem dyeableItem = (DyeableItem)itemStack.getItem();
             if(dyeableItem.hasColor(itemStack) && !world.isClient){
@@ -29,7 +29,7 @@ public class CauldronActionClean implements ICauldronAction{
                 entity.takeBottle(false);
                 world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
             }
-            return ActionResult.method_29236(world.isClient);
+            return ActionResult.success(world.isClient);
         }
         if(itemStack.getItem() instanceof BannerItem){
             if(BannerBlockEntity.getPatternCount(itemStack) > 0 && !world.isClient){
@@ -50,7 +50,7 @@ public class CauldronActionClean implements ICauldronAction{
                 }
             }
             world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
-            return ActionResult.method_29236(world.isClient);
+            return ActionResult.success(world.isClient);
         }
 
         if(itemStack.getItem() instanceof BlockItem){
@@ -67,7 +67,7 @@ public class CauldronActionClean implements ICauldronAction{
                     player.incrementStat(Stats.CLEAN_SHULKER_BOX);
                     world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 }
-                return ActionResult.method_29236(world.isClient);
+                return ActionResult.success(world.isClient);
             }
         }
         return ActionResult.PASS;

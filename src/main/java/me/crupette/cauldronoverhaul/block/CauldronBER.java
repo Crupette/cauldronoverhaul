@@ -45,10 +45,13 @@ public class CauldronBER extends BlockEntityRenderer<CauldronBlockEntity> {
         FluidRenderHandler fluidHandler = FluidRenderHandlerRegistry.INSTANCE.get(fluid);
         BlockState fluidBlock = fluid.getDefaultState().getBlockState();
         int fluidColor = fluidHandler.getFluidColor(null, null, fluid.getDefaultState());
+        if(blockEntity.dyed){
+            fluidColor = blockEntity.dyeColor;
+        }
 
         int fluidR = (fluidColor >> 16) & 0xFF;
         int fluidG = (fluidColor >> 8) & 0xFF;
-        int fluidB = (fluidColor >> 0) & 0xFF;
+        int fluidB = (fluidColor) & 0xFF;
 
         float height = (0.25f) + ((0.7f) * ((float)blockEntity.level_numerator / (float)blockEntity.level_denominator));
         int fluidLight = fluidBlock.getLuminance() > 0 ? 15728880 : light;

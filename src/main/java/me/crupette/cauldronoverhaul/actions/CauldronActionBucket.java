@@ -57,7 +57,7 @@ public class CauldronActionBucket implements ICauldronAction{
                         world.playSound(null, pos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     }
                     entity.markDirty();
-                    return ActionResult.method_29236(world.isClient);
+                    return ActionResult.success(world.isClient);
                 }
             }else if(fluid != Fluids.EMPTY && entity.level_numerator < entity.level_denominator) {
                 if (entity.fill(entity.level_denominator - entity.level_numerator, entity.level_denominator, fluid, false)) {
@@ -69,7 +69,7 @@ public class CauldronActionBucket implements ICauldronAction{
                         world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     }
                     entity.markDirty();
-                    return ActionResult.method_29236(world.isClient);
+                    return ActionResult.success(world.isClient);
                 }
             }
         }

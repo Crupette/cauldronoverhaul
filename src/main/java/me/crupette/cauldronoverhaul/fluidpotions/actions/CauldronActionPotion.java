@@ -38,7 +38,7 @@ public class CauldronActionPotion implements ICauldronAction {
                         world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     }
                     entity.markDirty();
-                    return ActionResult.method_29236(world.isClient);
+                    return ActionResult.success(world.isClient);
                 }
             }
         }else if(heldItem.getItem() instanceof PotionItem){
@@ -56,7 +56,7 @@ public class CauldronActionPotion implements ICauldronAction {
                     }
                     world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 }
-                return ActionResult.method_29236(world.isClient);
+                return ActionResult.success(world.isClient);
             }
         }else if(heldItem.getItem() == Items.GLASS_BOTTLE){
             if(entity.fluid instanceof PotionFluid && entity.takeBottle(true)) {
@@ -76,7 +76,7 @@ public class CauldronActionPotion implements ICauldronAction {
                     entity.takeBottle(false);
                     world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 }
-                return ActionResult.method_29236(world.isClient);
+                return ActionResult.success(world.isClient);
             }
         }
         return ActionResult.PASS;
