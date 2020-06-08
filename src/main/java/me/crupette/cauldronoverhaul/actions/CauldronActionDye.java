@@ -70,7 +70,7 @@ public class CauldronActionDye implements ICauldronAction{
                         heldItemStack.decrement(1);
                     }
                 }
-                return ActionResult.success(world.isClient);
+                return ActionResult.SUCCESS;
             }
             if(heldItem instanceof DyeableItem && entity.dyed && entity.takeBottle(true)){
                 DyeableItem dyeableItem = (DyeableItem)heldItem;
@@ -78,7 +78,7 @@ public class CauldronActionDye implements ICauldronAction{
                 player.incrementStat(Stats.USE_CAULDRON);
                 entity.takeBottle(false);
                 world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                return ActionResult.success(world.isClient);
+                return ActionResult.SUCCESS;
             }
         }
         return ActionResult.PASS;
