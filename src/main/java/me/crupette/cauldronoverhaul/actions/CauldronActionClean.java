@@ -20,7 +20,7 @@ public class CauldronActionClean implements ICauldronAction{
     @Override
     public ActionResult onUse(CauldronBlockEntity entity, World world, BlockPos pos, PlayerEntity player, Hand hand) {
         ItemStack itemStack = player.getStackInHand(hand);
-        if(entity.fluid != Fluids.WATER || !entity.takeBottle(true)) return ActionResult.PASS;
+        if(entity.fluid != Fluids.WATER || !entity.takeBottle(true) || entity.dyed) return ActionResult.PASS;
         if(itemStack.getItem() instanceof DyeableItem){
             DyeableItem dyeableItem = (DyeableItem)itemStack.getItem();
             if(dyeableItem.hasColor(itemStack) && !world.isClient){

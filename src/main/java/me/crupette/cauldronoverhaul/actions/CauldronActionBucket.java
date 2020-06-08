@@ -59,7 +59,7 @@ public class CauldronActionBucket implements ICauldronAction{
                     entity.markDirty();
                     return ActionResult.SUCCESS;
                 }
-            }else if(fluid != Fluids.EMPTY || entity.level_numerator < entity.level_denominator) {
+            }else if(fluid != Fluids.EMPTY && entity.level_numerator < entity.level_denominator) {
                 if (entity.fill(entity.level_denominator - entity.level_numerator, entity.level_denominator, fluid, false)) {
                     if (!world.isClient) {
                         if (!player.abilities.creativeMode) {
