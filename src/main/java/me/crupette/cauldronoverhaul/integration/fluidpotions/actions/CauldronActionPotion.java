@@ -1,4 +1,4 @@
-package me.crupette.cauldronoverhaul.fluidpotions.actions;
+package me.crupette.cauldronoverhaul.integration.fluidpotions.actions;
 
 import me.crupette.cauldronoverhaul.actions.ICauldronAction;
 import me.crupette.cauldronoverhaul.block.CauldronBlockEntity;
@@ -22,42 +22,51 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+//Allow cauldrons to accept potion buckets and normal potions (also splash and lingering potions)
 public class CauldronActionPotion implements ICauldronAction {
     @Override
     public ActionResult onUse(CauldronBlockEntity entity, World world, BlockPos pos, PlayerEntity player, Hand hand) {
         ItemStack heldItem = player.getStackInHand(hand);
         if (heldItem.getItem() instanceof PotionBucketItem) {
             Fluid fluid = FluidPotions.getStill(PotionUtil.getPotion(heldItem));
-            if(entity.level_numerator < entity.level_denominator) {
-                if (entity.fill(entity.level_denominator - entity.level_numerator, entity.level_denominator, fluid, false)) {
-                    if (!world.isClient) {
-                        if (!player.abilities.creativeMode) {
-                            player.setStackInHand(hand, new ItemStack(Items.BUCKET));
-                        }
-                        player.incrementStat(Stats.FILL_CAULDRON);
-                        world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+
+            //Entity is not full, and can be filled by the bucket
+            if(entity.level_numerator < entity.level_denominator && (entity.fluid == Fluids.EMPTY || entity.fluid == fluid)) {
+                if (!world.isClient) {
+                    if (!player.abilities.creativeMode) {
+                        player.setStackInHand(hand, new ItemStack(Items.BUCKET));
                     }
-                    entity.markDirty();
-                    return ActionResult.success(world.isClient);
+                    entity.fluid = fluid;
+
+                    //Reset numerators and denominators to a level 1
+                    entity.level_numerator = entity.level_denominator = 1;
+                    player.incrementStat(Stats.FILL_CAULDRON);
+                    world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 }
+                return ActionResult.success(world.isClient);
             }
         }else if(heldItem.getItem() instanceof PotionItem){
             Potion potion = PotionUtil.getPotion(heldItem);
             PotionFluid fluid = FluidPotions.getStill(potion);
-            if(entity.insertBottle(fluid, false)){
+            //Check if entity can take a bottle of this potion
+            if(entity.insertBottle(fluid, true)){
                 if(!world.isClient) {
                     if (!player.abilities.creativeMode) {
                         ItemStack glassBottle = new ItemStack(Items.GLASS_BOTTLE);
                         player.incrementStat(Stats.USE_CAULDRON);
                         player.setStackInHand(hand, glassBottle);
+                        //I have no idea what this does, but the normal cauldron does this so I roll with it
                         if (player instanceof ServerPlayerEntity) {
                             ((ServerPlayerEntity) player).openHandledScreen(player.playerScreenHandler);
                         }
                     }
+                    //Actually insert the bottle
+                    entity.insertBottle(fluid, false);
                     world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 }
                 return ActionResult.success(world.isClient);
             }
+            //Check for taking fluids out
         }else if(heldItem.getItem() == Items.GLASS_BOTTLE){
             if(entity.fluid instanceof PotionFluid && entity.takeBottle(true)) {
                 if (!world.isClient){
@@ -70,6 +79,7 @@ public class CauldronActionPotion implements ICauldronAction {
                         } else if (!player.inventory.insertStack(potionItem)) {
                             player.dropItem(potionItem, false);
                         } else if (player instanceof ServerPlayerEntity) {
+                            //Again, no clue
                             ((ServerPlayerEntity) player).openHandledScreen(player.playerScreenHandler);
                         }
                     }

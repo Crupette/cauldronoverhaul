@@ -1,4 +1,4 @@
-package me.crupette.cauldronoverhaul.fluidpotions.actions;
+package me.crupette.cauldronoverhaul.integration.fluidpotions.actions;
 
 import me.crupette.cauldronoverhaul.actions.ICauldronAction;
 import me.crupette.cauldronoverhaul.block.CauldronBlockEntity;
@@ -18,11 +18,13 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+//Allows for items to be placed in the cauldron. Only supports items capable of brewing the fluid currently contained
 public class CauldronActionIngredient implements ICauldronAction {
     @Override
     public ActionResult onUse(CauldronBlockEntity entity, World world, BlockPos pos, PlayerEntity player, Hand hand) {
         ItemStack heldItem = player.getStackInHand(hand);
         if(entity.fluid == Fluids.EMPTY) return ActionResult.PASS;
+        //Check that the item and fluid have a recipe together
         if(BrewingRecipeRegistry.hasRecipe(
                 PotionUtil.setPotion(new ItemStack(Items.POTION), entity.fluid.matchesType(Fluids.WATER) ? Potions.WATER :
                         (entity.fluid instanceof PotionFluid ? ((PotionFluid)entity.fluid).getPotion() : Potions.EMPTY)),
@@ -33,6 +35,7 @@ public class CauldronActionIngredient implements ICauldronAction {
                     if(!player.abilities.creativeMode){
                         heldItem.decrement(1);
                     }
+                    //Set the ingredient and sync with the client (items render in the cauldron)
                     entity.ingredient = new ItemStack(ingredient, 1);
                     entity.brewTimeLeft = 200;
                     entity.sync();

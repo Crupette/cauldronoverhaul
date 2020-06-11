@@ -1,4 +1,4 @@
-package me.crupette.cauldronoverhaul.fluidpotions.transformers;
+package me.crupette.cauldronoverhaul.integration.fluidpotions.transformers;
 
 import me.crupette.cauldronoverhaul.block.CauldronBlockEntity;
 import me.crupette.cauldronoverhaul.transformer.CauldronBlockTransformer;
@@ -19,6 +19,7 @@ public class PotionCauldronBlockTransformer implements CauldronBlockTransformer.
         PotionFluid potionFluid = (PotionFluid) blockEntity.fluid;
         Potion potion = potionFluid.getPotion();
 
+        //Fixes problem with potion fluids deleting the cauldron when deleted.
         if(potion.hasInstantEffect()){
             for(StatusEffectInstance effectInstance : potion.getEffects()){
                 effectInstance.getEffectType().applyInstantEffect(entity, entity, (LivingEntity)entity,

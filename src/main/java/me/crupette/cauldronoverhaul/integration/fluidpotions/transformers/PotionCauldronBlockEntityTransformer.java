@@ -1,4 +1,4 @@
-package me.crupette.cauldronoverhaul.fluidpotions.transformers;
+package me.crupette.cauldronoverhaul.integration.fluidpotions.transformers;
 
 import me.crupette.cauldronoverhaul.block.CauldronBlockEntity;
 import me.crupette.cauldronoverhaul.transformer.CauldronBlockEntityTransformer;
@@ -29,7 +29,8 @@ public class PotionCauldronBlockEntityTransformer implements CauldronBlockEntity
     ));
 
     public boolean onTick(CauldronBlockEntity blockEntity, World world, BlockPos pos) {
-        if(blockEntity.fluid == Fluids.EMPTY && blockEntity.ingredient != ItemStack.EMPTY){
+        //Can't check ItemStack.EMPTY, because NBT converts that to {air, 1}
+        if(blockEntity.fluid == Fluids.EMPTY && blockEntity.ingredient.getItem() != Items.AIR){
             blockEntity.ingredient = ItemStack.EMPTY;
             world.playSound(null, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 1.F, 1.F);
             if(!world.isClient) blockEntity.sync();
@@ -42,6 +43,7 @@ public class PotionCauldronBlockEntityTransformer implements CauldronBlockEntity
                 blockEntity.sync();
             }
 
+            //Brewing needs hot blocks under it,
             if(!hotBlocks.contains(world.getBlockState(pos.down()).getBlock())){
                 world.playSound(null, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 1.F, 1.F);
                 blockEntity.timeLeft = 0;
@@ -58,7 +60,8 @@ public class PotionCauldronBlockEntityTransformer implements CauldronBlockEntity
                 if(BrewingRecipeRegistry.hasRecipe(baseStack, blockEntity.ingredient)){
                     Item ingredientItem = blockEntity.ingredient.getItem();
                     blockEntity.brewTimeLeft--;
-                    //Brewing is done (timer is stored in ingredient count, hope this doesn't bite me in the ass
+                    //Brewing is done (timer is stored in ingredient count, hope this doesn't bite me in the ass)
+                    //It's no longer stored in the item count. It bit me in the ass.
                     if(blockEntity.brewTimeLeft <= 0){
                         ItemStack result = BrewingRecipeRegistry.craft(new ItemStack(ingredientItem), baseStack);
                         blockEntity.fluid = FluidPotions.getStill(PotionUtil.getPotion(result));

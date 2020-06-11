@@ -1,12 +1,12 @@
-package me.crupette.cauldronoverhaul.fluidpotions;
+package me.crupette.cauldronoverhaul.integration.fluidpotions;
 
 import me.crupette.cauldronoverhaul.actions.CauldronActions;
-import me.crupette.cauldronoverhaul.fluidpotions.actions.CauldronActionFuel;
-import me.crupette.cauldronoverhaul.fluidpotions.actions.CauldronActionIngredient;
-import me.crupette.cauldronoverhaul.fluidpotions.actions.CauldronActionPotion;
-import me.crupette.cauldronoverhaul.fluidpotions.transformers.PotionBucketActionTransformer;
-import me.crupette.cauldronoverhaul.fluidpotions.transformers.PotionCauldronBlockEntityTransformer;
-import me.crupette.cauldronoverhaul.fluidpotions.transformers.PotionCauldronBlockTransformer;
+import me.crupette.cauldronoverhaul.integration.fluidpotions.actions.CauldronActionFuel;
+import me.crupette.cauldronoverhaul.integration.fluidpotions.actions.CauldronActionIngredient;
+import me.crupette.cauldronoverhaul.integration.fluidpotions.actions.CauldronActionPotion;
+import me.crupette.cauldronoverhaul.integration.fluidpotions.transformers.PotionBucketActionTransformer;
+import me.crupette.cauldronoverhaul.integration.fluidpotions.transformers.PotionCauldronBlockEntityTransformer;
+import me.crupette.cauldronoverhaul.integration.fluidpotions.transformers.PotionCauldronBlockTransformer;
 import me.crupette.cauldronoverhaul.transformer.BucketActionTransformer;
 import me.crupette.cauldronoverhaul.transformer.CauldronBlockEntityTransformer;
 import me.crupette.cauldronoverhaul.transformer.CauldronBlockTransformer;

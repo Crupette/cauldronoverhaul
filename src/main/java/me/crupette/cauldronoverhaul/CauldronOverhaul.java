@@ -2,7 +2,8 @@ package me.crupette.cauldronoverhaul;
 
 import me.crupette.cauldronoverhaul.actions.*;
 import me.crupette.cauldronoverhaul.block.CauldronBlockEntity;
-import me.crupette.cauldronoverhaul.fluidpotions.FluidPotionsModIntegration;
+import me.crupette.cauldronoverhaul.integration.fluidpotions.FluidPotionsModIntegration;
+import me.crupette.cauldronoverhaul.integration.potiontipped.PotionTippedModIntegration;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.loader.api.FabricLoader;
@@ -35,6 +36,9 @@ public class CauldronOverhaul implements ModInitializer {
 
         if(FabricLoader.getInstance().isModLoaded("fluidpotions")){
             new FluidPotionsModIntegration().init();
+            if(FabricLoader.getInstance().isModLoaded("potiontipped")){
+                new PotionTippedModIntegration().init();
+            }
         }
     }
 
