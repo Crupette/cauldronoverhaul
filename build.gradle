@@ -84,8 +84,8 @@ curseforge {
 		addGameVersion 'Fabric'
 		relations {
 			requiredDependency 'fabric-api'
-			optionalDependency 'fluidpotions'
-			optionalDependency 'potiontipped'
+			optionalDependency 'fluid-potions'
+			optionalDependency 'potion-tipped'
 		}
 
 		mainArtifact(file("${project.buildDir.absolutePath}/libs/${archivesBaseName}-${project.version}.jar")) {
