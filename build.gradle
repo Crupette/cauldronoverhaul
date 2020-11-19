@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.4-SNAPSHOT'
+	id 'fabric-loom' version '0.5-SNAPSHOT'
 	id 'maven-publish'
 	id 'com.matthewprenger.cursegradle' version '1.4.0'
 	id 'com.novoda.build-properties' version '0.4.1'
@@ -29,11 +29,11 @@ dependencies {
 
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
-	modCompileOnly 'com.github.Crupette:fluidpotions:v1.1.2-1.16'
-	modRuntime 'com.github.Crupette:fluidpotions:v1.1.2-1.16'
+	modCompileOnly 'com.github.Crupette:fluidpotions:v1.1.5'
+	modRuntime 'com.github.Crupette:fluidpotions:v1.1.5'
 
-	modCompileOnly 'com.github.Crupette:potiontipped:master-SNAPSHOT'
-	modRuntime 'com.github.Crupette:potiontipped:master-SNAPSHOT'
+	//modCompileOnly 'com.github.Crupette:potiontipped:master-SNAPSHOT'
+	//modRuntime 'com.github.Crupette:potiontipped:master-SNAPSHOT'
 
 }
 
@@ -126,5 +126,9 @@ publishing {
 allprojects {
 	repositories {
 		maven { url 'https://jitpack.io' }
+		maven {
+			name = "BuildCraft"
+			url = "https://mod-buildcraft.com/maven"
+		}
 	}
 }

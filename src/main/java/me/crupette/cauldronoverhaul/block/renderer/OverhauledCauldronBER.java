@@ -1,59 +1,46 @@
-package me.crupette.cauldronoverhaul.block;
+package me.crupette.cauldronoverhaul.block.renderer;
 
+import me.crupette.cauldronoverhaul.block.entity.CauldronBlockEntity;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Matrix3f;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.registry.Registry;
 
-public class CauldronBER extends BlockEntityRenderer<CauldronBlockEntity> {
-    public CauldronBER(BlockEntityRenderDispatcher dispatcher) {
+public class OverhauledCauldronBER extends BlockEntityRenderer<CauldronBlockEntity> {
+
+    public OverhauledCauldronBER(BlockEntityRenderDispatcher dispatcher) {
         super(dispatcher);
     }
 
     @Override
     public void render(CauldronBlockEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        if(blockEntity.fluid == Fluids.EMPTY) return;
+        if(blockEntity.getSlot(0).getVolume().isEmpty()) return;
         matrices.push();
 
-        float itemScale = (float)blockEntity.brewTimeLeft / 200.f;
-
-        matrices.translate(0.5, 0.8, 0.5);
-        matrices.scale(itemScale, itemScale, itemScale);
-        MinecraftClient.getInstance().getItemRenderer().renderItem(blockEntity.ingredient, ModelTransformation.Mode.GROUND, light, overlay, matrices, vertexConsumers);
-
-        matrices.pop();
-        matrices.push();
-
-        Fluid fluid = blockEntity.fluid;
+        Fluid fluid = blockEntity.getSlot(0).getVolume().getFluid();
         Identifier fluidId = Registry.FLUID.getId(fluid);
 
         FluidRenderHandler fluidHandler = FluidRenderHandlerRegistry.INSTANCE.get(fluid);
         BlockState fluidBlock = fluid.getDefaultState().getBlockState();
         int fluidColor = fluidHandler.getFluidColor(null, null, fluid.getDefaultState());
-        if(blockEntity.dyed){
-            fluidColor = blockEntity.dyeColor;
-        }
 
         int fluidR = (fluidColor >> 16) & 0xFF;
         int fluidG = (fluidColor >> 8) & 0xFF;
         int fluidB = (fluidColor) & 0xFF;
 
-        float height = (0.25f) + ((0.7f) * ((float)blockEntity.level_numerator / (float)blockEntity.level_denominator));
+        float height = (0.25f) + ((0.7f) * (blockEntity.getSlot(0).getVolume().getCount().floatValue() / blockEntity.getSlot(0).getCapacity().floatValue()));
         int fluidLight = fluidBlock.getLuminance() > 0 ? 15728880 : light;
 
         Sprite fluidSprite = fluidHandler.getFluidSprites(null, null, fluid.getDefaultState())[0];

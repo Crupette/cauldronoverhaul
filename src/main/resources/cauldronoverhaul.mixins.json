@@ -3,7 +3,7 @@
   "package": "me.crupette.cauldronoverhaul.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "CauldronBlockMixin"
+    "BucketItemAccessor"
   ],
   "client": [],
   "server": [],
