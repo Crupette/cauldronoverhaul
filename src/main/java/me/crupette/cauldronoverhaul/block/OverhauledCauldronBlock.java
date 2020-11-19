@@ -44,7 +44,11 @@ public class OverhauledCauldronBlock extends BlockWithEntity {
     }
 
     public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+        if(blockEntity instanceof CauldronBlockEntity){
+            CauldronBlockEntity cauldronBlockEntity = (CauldronBlockEntity)blockEntity;
+            cauldronBlockEntity.onCollision(state, world, pos, entity);
+        }
     }
 
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {

@@ -6,6 +6,7 @@ import me.crupette.cauldronoverhaul.block.entity.CauldronBlockEntity;
 import me.crupette.cauldronoverhaul.hook.CauldronHookBottle;
 import me.crupette.cauldronoverhaul.hook.CauldronHookBucket;
 import me.crupette.cauldronoverhaul.hook.CauldronHookClean;
+import me.crupette.cauldronoverhaul.integration.COModIntegration;
 import net.fabricmc.api.ModInitializer;
 
 import net.minecraft.util.Identifier;
@@ -27,6 +28,8 @@ public class CauldronOverhaul implements ModInitializer {
         CauldronBlockEntity.hooks.add(new CauldronHookBucket());
         CauldronBlockEntity.hooks.add(new CauldronHookBottle());
         CauldronBlockEntity.hooks.add(new CauldronHookClean());
+
+        COModIntegration.register();
     }
 
     public static void log(Level level, String message){

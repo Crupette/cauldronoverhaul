@@ -7,10 +7,12 @@ import me.crupette.cauldronoverhaul.api.Tank;
 import me.crupette.cauldronoverhaul.block.entity.CauldronBlockEntity;
 import me.crupette.cauldronoverhaul.mixin.BucketItemAccessor;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.FluidBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.fluid.LavaFluid;
 import net.minecraft.item.*;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
@@ -18,6 +20,7 @@ import net.minecraft.potion.Potions;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.tag.FluidTags;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -29,6 +32,25 @@ public class CauldronHookBucket implements CauldronHook {
 
     public CauldronHookBucket(){
         HookTransformer.addTransformer(new CauldronHookBucketTransformer());
+    }
+
+    @Override
+    public void onEntityCollision(CauldronBlockEntity blockEntity, BlockState state, World world, BlockPos pos, Entity entity) {
+        FluidVolume volume = blockEntity.getSlot(0).getVolume();
+        int level = volume.getCount().multiplyBy(Fraction.getFraction(3.f)).intValue();
+        float f = (float)pos.getY() + (6.0F + (float)(3 * level)) / 16.0F;
+        if(!world.isClient && level > 0 && entity.getY() <= f){
+            if(volume.getFluid().isIn(FluidTags.WATER) && entity.isOnFire()){
+                entity.extinguish();
+                blockEntity.getSlot(0).extract(new FluidVolume(Fluids.WATER, Fraction.ONE_THIRD), false);
+                blockEntity.sync();
+                blockEntity.markDirty();
+            }
+            if(volume.getFluid().isIn(FluidTags.LAVA)){
+                volume.getFluid().getDefaultState().getBlockState().onEntityCollision(world, pos, entity);
+            }
+        }
+
     }
 
     @Override

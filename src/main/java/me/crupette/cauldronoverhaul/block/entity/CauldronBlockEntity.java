@@ -7,6 +7,7 @@ import me.crupette.cauldronoverhaul.api.TankImpl;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
@@ -97,5 +98,11 @@ public class CauldronBlockEntity extends BlockEntity implements TankImpl, Tickab
             hook.toTag(this, tag);
         });
         return tag;
+    }
+
+    public void onCollision(BlockState state, World world, BlockPos pos, Entity entity) {
+        hooks.forEach(hook -> {
+            hook.onEntityCollision(this, state, world, pos, entity);
+        });
     }
 }
